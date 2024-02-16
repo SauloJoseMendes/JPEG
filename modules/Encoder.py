@@ -3,6 +3,7 @@ class Encoder:
     def __init__(self, img):
         self.img = img
         self.R, self.G, self.B = self.split_rgb(img)
+        self.rows, self.cols = self.R.shape
         self.R, self.G, self.B = self.apply_padding(self.R), self.apply_padding(self.G), self.apply_padding(self.B)
 
     def split_rgb(self, img):
