@@ -13,6 +13,7 @@ class Encoder:
         g = img.image[:, :, 1]
         b = img.image[:, :, 2]
         return r, g, b
+
     def apply_padding(self, channel):
         channel = self.apply_vertical_padding(channel)
         channel = self.apply_horizontal_padding(channel)
@@ -36,8 +37,8 @@ class Encoder:
 
     def convert_to_ycbcr(self):
         T = np.array([[0.299, 0.587, 0.144],
-              [-0.168736, -0.331264, 0.5],
-              [0.5, -0.418688, -0.081312]])
+                    [-0.168736, -0.331264, 0.5],
+                    [0.5, -0.418688, -0.081312]])
 
         rgb = np.stack((self.R, self.G, self.B))
 
