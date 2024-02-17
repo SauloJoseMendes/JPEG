@@ -34,17 +34,26 @@ if __name__ == '__main__':
     cm_gray = clr.LinearSegmentedColormap.from_list("gray", [(0, 0, 0), (1, 1, 1)], N=256)
 
     # ... ALÍNEA 3 ...
+    """
     airport.show_img("Img Orig")
     showImg(airport_encoded.R, cmap = cm_red, caption = "R")
     showImg(airport_encoded.G, cmap = cm_green, caption = "G")
     showImg(airport_encoded.B, cmap = cm_blue, caption = "B")
+    """
 
     # ... ALÍNEA 4 ...
+    """
     print("CANAL R ORIGINAL\t" + str(airport.image[:, :, 0].shape) +
           "\nCANAL R COM PADDING\t" + str(airport_encoded.R.shape) +
           "\nCANAL R SEM PADDING\t" + str(airport_decoded.R.shape))
+    """
     
     # ... ALÍNEA 5 ...
+    """
     showImg(airport_encoded.Y, cmap = cm_gray, caption = "Y")
     showImg(airport_encoded.Cb, cmap = cm_gray, caption = "Cb")
     showImg(airport_encoded.Cr, cmap = cm_gray, caption = "Cr")
+    """
+    print("PIXEL DE COORDENADA [0, 0] ANTES\t" + str(airport.image[0][0]) +
+        "\nPIXEL DE COORDENADA [0, 0] DEPOIS\t" + str(airport_decoded.RGB[0][0]))
+    showImg(airport_decoded.RGB, caption = "Depois")
