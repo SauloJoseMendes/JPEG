@@ -1,10 +1,12 @@
 import numpy as np
+
 class Encoder:
     def __init__(self, img):
         self.img = img
         self.R, self.G, self.B = self.split_rgb(img)
         self.rows, self.cols = self.R.shape
         self.R, self.G, self.B = self.apply_padding(self.R), self.apply_padding(self.G), self.apply_padding(self.B)
+        self.Y, self.Cb, self.Cr = self.convert_to_ycbcr()
 
     def split_rgb(self, img):
         r = img.image[:, :, 0]
@@ -31,3 +33,17 @@ class Encoder:
         horizontal_array = np.repeat(channel[:, -1:], horizontal_padding, 1)
         channel = np.hstack((channel, horizontal_array))
         return channel
+
+    def convert_to_ycbcr(self):
+        T = np.array([[0.299, 0.587, 0.144],
+              [-0.168736, -0.331264, 0.5],
+              [0.5, -0.418688, -0.081312]])
+
+        rgb = np.stack((self.R, self.G, self.B))
+
+        ycbcr = np.dot(T, rgb.reshape(3, -1)) + np.array([[0], [128], [128]])
+        ycbcr = np.round(ycbcr)
+        ycbcr = np.clip(ycbcr, 0, 255)
+        ycbcr = ycbcr.reshape(rgb.shape)
+
+        return ycbcr.astype(np.uint8)
