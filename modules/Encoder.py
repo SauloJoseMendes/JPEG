@@ -36,13 +36,15 @@ class Encoder:
         return channel
 
     def convert_to_ycbcr(self):
-        T = np.array([[0.299, 0.587, 0.144],
-                      [-0.168736, -0.331264, 0.5],
-                      [0.5, -0.418688, -0.081312]])
+        conversion_matrix = np.array([[1., 0., 1.402],
+                                      [1., -0.344136, -0.714136],
+                                      [1., 1.772, 0.]])
+        
+        conversion_matrix_inversed = np.linalg.inv(conversion_matrix)
 
         rgb = np.stack((self.R, self.G, self.B))
 
-        ycbcr = np.dot(T, rgb.reshape(3, -1)) + np.array([[0], [128], [128]])
+        ycbcr = np.dot(conversion_matrix_inversed, rgb.reshape(3, -1)) + np.array([[0], [128], [128]])
         ycbcr = np.round(ycbcr)
         ycbcr = np.clip(ycbcr, 0, 255)
         ycbcr = ycbcr.reshape(rgb.shape)

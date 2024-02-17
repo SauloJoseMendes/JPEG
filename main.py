@@ -42,18 +42,16 @@ if __name__ == '__main__':
     """
 
     # ... ALÍNEA 4 ...
-    """
     print("CANAL R ORIGINAL\t" + str(airport.image[:, :, 0].shape) +
           "\nCANAL R COM PADDING\t" + str(airport_encoded.R.shape) +
           "\nCANAL R SEM PADDING\t" + str(airport_decoded.R.shape))
-    """
     
     # ... ALÍNEA 5 ...
     """
     showImg(airport_encoded.Y, cmap = cm_gray, caption = "Y")
     showImg(airport_encoded.Cb, cmap = cm_gray, caption = "Cb")
     showImg(airport_encoded.Cr, cmap = cm_gray, caption = "Cr")
+    showImg(airport_decoded.RGB, caption = "Depois")
     """
     print("PIXEL DE COORDENADA [0, 0] ANTES\t" + str(airport.image[0][0]) +
         "\nPIXEL DE COORDENADA [0, 0] DEPOIS\t" + str(airport_decoded.RGB[0][0]))
-    showImg(airport_decoded.RGB, caption = "Depois")

@@ -9,15 +9,13 @@ class Decoder:
         self.RGB = self.join_rgb(self.R, self.G, self.B)
 
     def convert_to_rgb(self, Y, Cb, Cr):
-        T = np.array([[0.299, 0.587, 0.144],
-                      [-0.168736, -0.331264, 0.5],
-                      [0.5, -0.418688, -0.081312]])
-
-        Ti = np.linalg.inv(T)
+        conversion_matrix = np.array([[1., 0., 1.402],
+                                      [1., -0.344136, -0.714136],
+                                      [1., 1.772, 0.]])
 
         ycbcr = np.stack((Y, Cb, Cr))
 
-        rgb = np.dot(Ti, ycbcr.reshape(3, -1)) - np.array([[0], [128], [128]])
+        rgb = np.dot(conversion_matrix, ycbcr.reshape(3, -1) - np.array([[0], [128], [128]]))
         rgb = np.round(rgb)
         rgb = np.clip(rgb, 0, 255)
         rgb = rgb.reshape(ycbcr.shape)
