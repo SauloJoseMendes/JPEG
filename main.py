@@ -3,6 +3,14 @@ from modules.Encoder import Encoder
 from modules.Image import Image
 from modules.Decoder import Decoder
 
+def showImg(img, cmap = None, caption = ""):
+    plt.figure()
+    plt.imshow(img, cmap)
+    plt.axis("off")
+    plt.title(caption)
+    plt.show(block=True)
+    plt.interactive(False)
+
 if __name__ == '__main__':
     # ... IMAGES ...
     airport = Image("imagens/airport.bmp")
@@ -26,15 +34,17 @@ if __name__ == '__main__':
     cm_gray = clr.LinearSegmentedColormap.from_list("gray", [(0, 0, 0), (1, 1, 1)], N=256)
 
     # ... ALÍNEA 3 ...
-    """
-    airport.show_img("airport.bmp")
-    airport.show_img("red colormap", cm_red)
-    airport.show_img("green colormap", cm_green)
-    airport.show_img("blue colormap", cm_blue)
-    airport.show_img("gray colormap", cm_gray)
-    """
+    airport.show_img("Img Orig")
+    showImg(airport_encoded.R, cmap = cm_red, caption = "R")
+    showImg(airport_encoded.G, cmap = cm_green, caption = "G")
+    showImg(airport_encoded.B, cmap = cm_blue, caption = "B")
 
     # ... ALÍNEA 4 ...
     print("CANAL R ORIGINAL\t" + str(airport.image[:, :, 0].shape) +
           "\nCANAL R COM PADDING\t" + str(airport_encoded.R.shape) +
           "\nCANAL R SEM PADDING\t" + str(airport_decoded.R.shape))
+    
+    # ... ALÍNEA 5 ...
+    showImg(airport_encoded.Y, cmap = cm_gray, caption = "Y")
+    showImg(airport_encoded.Cb, cmap = cm_gray, caption = "Cb")
+    showImg(airport_encoded.Cr, cmap = cm_gray, caption = "Cr")
