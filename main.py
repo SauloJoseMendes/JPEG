@@ -3,14 +3,6 @@ from modules.Encoder import Encoder
 from modules.Image import Image
 from modules.Decoder import Decoder
 
-def showImg(img, cmap = None, caption = ""):
-    plt.figure()
-    plt.imshow(img, cmap)
-    plt.axis("off")
-    plt.title(caption)
-    plt.show(block=True)
-    plt.interactive(False)
-
 if __name__ == '__main__':
     # ... IMAGES ...
     airport = Image("imagens/airport.bmp")
@@ -35,10 +27,10 @@ if __name__ == '__main__':
 
     # ... ALÍNEA 3 ...
     """
-    airport.show_img("Img Orig")
-    showImg(airport_encoded.R, cmap = cm_red, caption = "R")
-    showImg(airport_encoded.G, cmap = cm_green, caption = "G")
-    showImg(airport_encoded.B, cmap = cm_blue, caption = "B")
+    airport.show_img(channel = airport.image, caption = "Img Orig", subplot = 221, first = True)
+    Image.show_img(channel = airport_encoded.R, cmap = "Reds", caption = "R", subplot = 222)
+    Image.show_img(channel = airport_encoded.G, cmap = "Greens", caption = "G", subplot = 223)
+    Image.show_img(channel = airport_encoded.B, cmap = "Blues", caption = "B", subplot = 224, last = True)
     """
 
     # ... ALÍNEA 4 ...
@@ -48,10 +40,11 @@ if __name__ == '__main__':
     
     # ... ALÍNEA 5 ...
     """
-    showImg(airport_encoded.Y, cmap = cm_gray, caption = "Y")
-    showImg(airport_encoded.Cb, cmap = cm_gray, caption = "Cb")
-    showImg(airport_encoded.Cr, cmap = cm_gray, caption = "Cr")
-    showImg(airport_decoded.RGB, caption = "Depois")
+    Image.show_img(channel = airport_encoded.Y, cmap = "Grays", caption = "Y", subplot = 221, first = True)
+    Image.show_img(channel = airport_encoded.Cb, cmap = "Blues", caption = "Cb", subplot = 222)
+    Image.show_img(channel = airport_encoded.Cr, cmap = "Reds", caption = "Cr", subplot = 223)
+    Image.show_img(channel = airport_decoded.RGB, caption = "Depois", subplot = 224, last = True)
     """
+    
     print("PIXEL DE COORDENADA [0, 0] ANTES\t" + str(airport.image[0][0]) +
         "\nPIXEL DE COORDENADA [0, 0] DEPOIS\t" + str(airport_decoded.RGB[0][0]))
