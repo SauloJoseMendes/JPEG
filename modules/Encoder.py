@@ -1,12 +1,15 @@
 import numpy as np
-
+import cv2
 class Encoder:
-    def __init__(self, img):
+    def __init__(self, img, downsampling_rate = [4,2,0], interpolation = cv2.INTER_LINEAR):
         self.img = img
+        self.downsampling_rate = downsampling_rate
+        self.interpolation = interpolation
         self.R, self.G, self.B = self.split_rgb(img)
         self.rows, self.cols = self.R.shape
         self.R, self.G, self.B = self.apply_padding(self.R), self.apply_padding(self.G), self.apply_padding(self.B)
         self.Y, self.Cb, self.Cr = self.convert_to_ycbcr()
+        self.Y_d, self.Cb_d, self.Cr_d = self.downsample_ycbcr(downsampling_rate = downsampling_rate, interpolation= interpolation)
 
     def split_rgb(self, img):
         r = img.image[:, :, 0]
@@ -50,3 +53,17 @@ class Encoder:
         ycbcr = ycbcr.reshape(rgb.shape)
 
         return ycbcr.astype(np.uint8)
+    
+    def downsample_ycbcr(self, downsampling_rate = [4,2,0], interpolation = cv2.INTER_LINEAR):
+        height, width = self.Y.shape
+        if downsampling_rate[1] != 0:
+            new_width = width // downsampling_rate[1]
+        else:
+            new_width = width
+        if downsampling_rate[2] != 0:
+            new_height = height // downsampling_rate[2]
+        else:
+            new_height = height
+        Cb_d = cv2.resize(self.Cb, (new_width, new_height), interpolation=interpolation)
+        Cr_d = cv2.resize(self.Cr, (new_width, new_height), interpolation=interpolation)
+        return self.Y, Cb_d, Cr_d
