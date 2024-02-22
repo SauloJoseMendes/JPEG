@@ -1,15 +1,18 @@
 import numpy as np
 import cv2
+from scipy.fftpack import dct
 class Encoder:
-    def __init__(self, img, downsampling_rate = [4,2,0], interpolation = cv2.INTER_LINEAR):
+    def __init__(self, img, downsampling_rate = [4,2,0], interpolation = cv2.INTER_LINEAR, block_size = None):
         self.img = img
+        self.block_size = block_size
         self.downsampling_rate = downsampling_rate
         self.interpolation = interpolation
         self.R, self.G, self.B = self.split_rgb(img)
         self.rows, self.cols = self.R.shape
         self.R, self.G, self.B = self.apply_padding(self.R), self.apply_padding(self.G), self.apply_padding(self.B)
         self.Y, self.Cb, self.Cr = self.convert_to_ycbcr()
-        self.Y_d, self.Cb_d, self.Cr_d = self.downsample_ycbcr(downsampling_rate = downsampling_rate, interpolation= interpolation)
+        self.Y_d, self.Cb_d, self.Cr_d = self.downsample_ycbcr(downsampling_rate = downsampling_rate, interpolation = interpolation)
+        self.Y_DCT, self.Cb_DCT, self.Cr_DCT = self.calculate_dct(self.Y_d), self.calculate_dct(self.Cb_d), self.calculate_dct(self.Cr_d)
 
     def split_rgb(self, img):
         r = img.image[:, :, 0]
@@ -67,3 +70,16 @@ class Encoder:
         Cb_d = cv2.resize(self.Cb, (new_width, new_height), interpolation=interpolation)
         Cr_d = cv2.resize(self.Cr, (new_width, new_height), interpolation=interpolation)
         return self.Y, Cb_d, Cr_d
+    
+    def calculate_dct(self, channel):
+        if self.block_size is None:
+            return dct(dct(channel, norm='ortho').T, norm='ortho').T
+        
+        channel_shape = channel.shape
+        channel_dct = np.zeros(channel_shape)
+
+        for i in range(0, channel_shape[0], self.block_size):
+            for j in range(0, channel_shape[1], self.block_size):
+                channel_dct[i:i+self.block_size, j:j+self.block_size] = dct(dct(channel[i:i+self.block_size, j:j+self.block_size], norm='ortho').T, norm='ortho').T
+        
+        return channel_dct

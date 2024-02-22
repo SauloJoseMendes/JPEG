@@ -50,8 +50,9 @@ if __name__ == '__main__':
         "\nPIXEL DE COORDENADA [0, 0] DEPOIS\t" + str(airport_decoded.RGB[0][0]))
     """
 
+    
     # ... ALÍNEA 6 ...
-
+    """
     # COMPARAR Cb
     # ORIGINAL
     Image.show_img(channel = airport_encoded.Cb, cmap = "Blues", caption = "WITHOUT DOWNSAMPLING", subplot = 221, first = True)
@@ -83,4 +84,6 @@ if __name__ == '__main__':
     Image.show_img(channel = airport_decoded.Cb_up, cmap = "Blues", caption = "Cb Upsampled", subplot = 324)
     Image.show_img(channel = airport_encoded.Cr, cmap = "Reds", caption = "Cr Original", subplot = 325)
     Image.show_img(channel = airport_decoded.Cr_up, cmap = "Reds", caption = "Cr Upsampled", subplot = 326, last = True)
-    
+    """
+
+    # ... ALÍNEA 7 ...
