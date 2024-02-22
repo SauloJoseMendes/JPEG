@@ -1,4 +1,4 @@
-from modules import plt, clr, np, cv2
+from modules import plt, clr, np, cv2, cm
 from modules.Encoder import Encoder
 from modules.Image import Image
 from modules.Decoder import Decoder
@@ -98,14 +98,14 @@ if __name__ == '__main__':
     Image.show_img(channel = airport_decoded_8x8.RGB, caption = "8x8", subplot = 222)
     Image.show_img(channel = airport_decoded_64x64.RGB, caption = "64x64", subplot = 223, last = True)
     """
-    Image.show_img(channel = np.log(np.abs(airport_encoded.Y_DCT) + 0.0001),cmap="Greys", caption = "Full - Y_DCT", subplot = 221, first = True)
-    Image.show_img(channel = np.log(np.abs(airport_encoded_8x8.Y_DCT) + 0.0001),cmap="Greys", caption = "8x8 - Y_DCT", subplot = 222)
-    Image.show_img(channel = np.log(np.abs(airport_encoded_64x64.Y_DCT) + 0.0001),cmap="Greys", caption = "64x64 - Y_DCT", subplot = 223, last = True)
+    Image.show_img(channel = np.log(np.abs(airport_encoded.Y_DCT) + 0.0001),cmap=cm.Greys_r, caption = "Full - Y_DCT", subplot = 221, first = True)
+    Image.show_img(channel = np.log(np.abs(airport_encoded_8x8.Y_DCT) + 0.0001),cmap=cm.Greys_r, caption = "8x8 - Y_DCT", subplot = 222)
+    Image.show_img(channel = np.log(np.abs(airport_encoded_64x64.Y_DCT) + 0.0001),cmap=cm.Greys_r, caption = "64x64 - Y_DCT", subplot = 223, last = True)
 
-    Image.show_img(channel = np.log(np.abs(airport_encoded.Cb_DCT) + 0.0001),cmap="Greys", caption = "Full - Cb_DCT", subplot = 221, first = True)
-    Image.show_img(channel = np.log(np.abs(airport_encoded_8x8.Cb_DCT) + 0.0001),cmap="Greys", caption = "8x8 - Cb_DCT", subplot = 222)
-    Image.show_img(channel = np.log(np.abs(airport_encoded_64x64.Cb_DCT) + 0.0001),cmap="Greys", caption = "64x64 - Cb_DCT", subplot = 223, last = True)
+    Image.show_img(channel = np.log(np.abs(airport_encoded.Cb_DCT) + 0.0001),cmap=cm.Greys_r, caption = "Full - Cb_DCT", subplot = 221, first = True)
+    Image.show_img(channel = np.log(np.abs(airport_encoded_8x8.Cb_DCT) + 0.0001),cmap=cm.Greys_r, caption = "8x8 - Cb_DCT", subplot = 222)
+    Image.show_img(channel = np.log(np.abs(airport_encoded_64x64.Cb_DCT) + 0.0001),cmap=cm.Greys_r, caption = "64x64 - Cb_DCT", subplot = 223, last = True)
 
-    Image.show_img(channel = np.log(np.abs(airport_encoded.Cr_DCT) + 0.0001),cmap="Greys", caption = "Full - Cr_DCT", subplot = 221, first = True)
-    Image.show_img(channel = np.log(np.abs(airport_encoded_8x8.Cr_DCT) + 0.0001),cmap="Greys", caption = "8x8 - Cr_DCT", subplot = 222)
-    Image.show_img(channel = np.log(np.abs(airport_encoded_64x64.Cr_DCT) + 0.0001),cmap="Greys", caption = "64x64 - Cr_DCT", subplot = 223, last = True)
+    Image.show_img(channel = np.log(np.abs(airport_encoded.Cr_DCT) + 0.0001),cmap=cm.Greys_r, caption = "Full - Cr_DCT", subplot = 221, first = True)
+    Image.show_img(channel = np.log(np.abs(airport_encoded_8x8.Cr_DCT) + 0.0001),cmap=cm.Greys_r, caption = "8x8 - Cr_DCT", subplot = 222)
+    Image.show_img(channel = np.log(np.abs(airport_encoded_64x64.Cr_DCT) + 0.0001),cmap=cm.Greys_r, caption = "64x64 - Cr_DCT", subplot = 223, last = True)
