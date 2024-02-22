@@ -39,12 +39,12 @@ class Decoder:
     
     def upsample_ycbcr(self):
         # Get the dimensions of the original Y channel
-        original_height, original_width = self.encoded_img.Y_d.shape
+        original_height, original_width = self.Y_d.shape
         interpolation = self.encoded_img.interpolation
         # Resize the Cb and Cr channels to match the original Y channel dimensions
         Cb_up = cv2.resize(self.Cb_d, (original_width, original_height), interpolation=interpolation)
         Cr_up = cv2.resize(self.Cr_d, (original_width, original_height), interpolation=interpolation)
-        return self.encoded_img.Y_d, Cb_up, Cr_up
+        return self.Y_d, Cb_up, Cr_up
     
     def calculate_idct(self, channel_dct):
         if self.encoded_img.block_size is None:

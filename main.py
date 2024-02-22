@@ -14,10 +14,16 @@ if __name__ == '__main__':
     nature_encoded = Encoder(nature)
     geometric_encoded = Encoder(geometric)
 
+    airport_encoded_8x8 = Encoder(airport, block_size=8)
+    airport_encoded_64x64 = Encoder(airport, block_size=64)
+
     # ... IMAGES DECODED ...
     airport_decoded = Decoder(airport_encoded)
     nature_decoded = Decoder(nature_encoded)
     geometric_decoded = Decoder(geometric_encoded)
+
+    airport_decoded_8x8 = Decoder(airport_encoded_8x8)
+    airport_decoded_64x64 = Decoder(airport_encoded_64x64)
 
     # ... COLORMAPS ...
     cm_red = clr.LinearSegmentedColormap.from_list("red", [(0, 0, 0), (1, 0, 0)], N=256)
@@ -38,7 +44,8 @@ if __name__ == '__main__':
     print("CANAL R ORIGINAL\t" + str(airport.image[:, :, 0].shape) +
           "\nCANAL R COM PADDING\t" + str(airport_encoded.R.shape) +
           "\nCANAL R SEM PADDING\t" + str(airport_decoded.R.shape))
-     """
+    """
+
     # ... ALÍNEA 5 ...
     """
     Image.show_img(channel = airport_encoded.Y, cmap = "Grays", caption = "Y", subplot = 221, first = True)
@@ -50,7 +57,6 @@ if __name__ == '__main__':
         "\nPIXEL DE COORDENADA [0, 0] DEPOIS\t" + str(airport_decoded.RGB[0][0]))
     """
 
-    
     # ... ALÍNEA 6 ...
     """
     # COMPARAR Cb
@@ -87,3 +93,6 @@ if __name__ == '__main__':
     """
 
     # ... ALÍNEA 7 ...
+    Image.show_img(channel = airport_decoded.RGB, caption = "Full", subplot = 221, first = True)
+    Image.show_img(channel = airport_decoded_8x8.RGB, caption = "8x8", subplot = 222)
+    Image.show_img(channel = airport_decoded_64x64.RGB, caption = "64x64", subplot = 223, last = True)
