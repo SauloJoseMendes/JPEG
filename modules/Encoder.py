@@ -57,11 +57,11 @@ class Encoder:
     def downsample_ycbcr(self, downsampling_rate = [4,2,0], interpolation = cv2.INTER_LINEAR):
         height, width = self.Y.shape
         if downsampling_rate[1] != 0:
-            new_width = width // downsampling_rate[1]
+            new_width = int(width * (downsampling_rate[1] / downsampling_rate[0]))
         else:
             new_width = width
         if downsampling_rate[2] != 0:
-            new_height = height // downsampling_rate[2]
+            new_height = int(height * (downsampling_rate[2] / downsampling_rate[0]))
         else:
             new_height = height
         Cb_d = cv2.resize(self.Cb, (new_width, new_height), interpolation=interpolation)
