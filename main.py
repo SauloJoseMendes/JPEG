@@ -83,7 +83,8 @@ if __name__ == '__main__':
     Image.show_img(channel = airport_encoded.Cr_d, cmap = cm_red, caption = "LANCZOS", subplot = 223)
     # LINEAR
     Image.show_img(channel = airport_encoded.Cr_d, cmap = cm_red, caption = "LINEAR", subplot = 224, last = True)
-
+    """
+    """
     # RECONSTRUIR
     Image.show_img(channel = airport_encoded.Y, cmap = cm_grey, caption = "Y Original", subplot = 321, first = True)
     Image.show_img(channel = airport_decoded.Y_up, cmap = cm_grey, caption = "Y Upsampled", subplot = 322)
@@ -92,6 +93,19 @@ if __name__ == '__main__':
     Image.show_img(channel = airport_encoded.Cr, cmap = cm_red, caption = "Cr Original", subplot = 325)
     Image.show_img(channel = airport_decoded.Cr_up, cmap = cm_red, caption = "Cr Upsampled", subplot = 326, last = True)
     """
+
+    # ESCOLHER A MELHOR (LINEAR)
+    print("A")
+    airport_4_2_2 = Encoder(airport, downsampling_rate=422)
+    Image.show_img(channel = airport_4_2_2.Y_d, cmap = cm_grey, caption = "Y downsampling 4:2:2", subplot = 231, first = True)
+    Image.show_img(channel = airport_4_2_2.Cb_d, cmap = cm_grey, caption = "Cb downsampling 4:2:2", subplot = 232)
+    Image.show_img(channel = airport_4_2_2.Cr_d, cmap = cm_grey, caption = "Cr downsampling 4:2:2", subplot = 233)
+
+    print("B")
+    airport_4_2_0 = Encoder(airport, downsampling_rate=420)
+    Image.show_img(channel = airport_4_2_0.Y_d, cmap = cm_grey, caption = "Y downsampling 4:2:0", subplot = 234)
+    Image.show_img(channel = airport_4_2_0.Cb_d, cmap = cm_grey, caption = "Cb downsampling 4:2:0", subplot = 235)
+    Image.show_img(channel = airport_4_2_0.Cr_d, cmap = cm_grey, caption = "Cr downsampling 4:2:0", subplot = 236, last = True)
 
     # ... ALÍNEA 7 ...
     """ 

@@ -2,7 +2,7 @@ import numpy as np
 import cv2
 from scipy.fftpack import dct
 class Encoder:
-    def __init__(self, img, downsampling_rate = [4,2,0], interpolation = cv2.INTER_LINEAR, block_size = None):
+    def __init__(self, img, downsampling_rate = 422, interpolation = cv2.INTER_LINEAR, block_size = None):
         self.img = img
         self.block_size = block_size
         self.downsampling_rate = downsampling_rate
@@ -57,18 +57,19 @@ class Encoder:
 
         return ycbcr.astype(np.uint8)
     
-    def downsample_ycbcr(self, downsampling_rate = [4,2,0], interpolation = cv2.INTER_LINEAR):
-        height, width = self.Y.shape
-        if downsampling_rate[1] != 0:
-            new_width = int(width * (downsampling_rate[1] / downsampling_rate[0]))
-        else:
-            new_width = width
-        if downsampling_rate[2] != 0:
-            new_height = int(height * (downsampling_rate[2] / downsampling_rate[0]))
-        else:
-            new_height = height
-        Cb_d = cv2.resize(self.Cb, (new_width, new_height), interpolation=interpolation)
-        Cr_d = cv2.resize(self.Cr, (new_width, new_height), interpolation=interpolation)
+    def downsample_ycbcr(self, downsampling_rate = 422, interpolation = cv2.INTER_LINEAR):
+        scale_factor_h = 1
+        scale_factor_v = 1
+        if downsampling_rate == 422:
+            scale_factor_h = 0.5
+            scale_factor_v = 1
+        if downsampling_rate == 420:
+            scale_factor_h = 0.5
+            scale_factor_v = 0.5
+        Cb_new_size = (int(self.Cb.shape[1] * scale_factor_h), int(self.Cb.shape[0] * scale_factor_v))
+        Cr_new_size = (int(self.Cr.shape[1] * scale_factor_h), int(self.Cr.shape[0] * scale_factor_v))
+        Cb_d = cv2.resize(self.Cb, Cb_new_size, interpolation=interpolation)
+        Cr_d = cv2.resize(self.Cr, Cr_new_size, interpolation=interpolation)
         return self.Y, Cb_d, Cr_d
     
     def calculate_dct(self, channel):
