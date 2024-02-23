@@ -26,17 +26,17 @@ if __name__ == '__main__':
     airport_decoded_64x64 = Decoder(airport_encoded_64x64)
 
     # ... COLORMAPS ...
-    cm_red = clr.LinearSegmentedColormap.from_list("red", [(0, 0, 0), (1, 0, 0)], N=256)
-    cm_green = clr.LinearSegmentedColormap.from_list("green", [(0, 0, 0), (0, 1, 0)], N=256)
-    cm_blue = clr.LinearSegmentedColormap.from_list("blue", [(0, 0, 0), (0, 0, 1)], N=256)
-    cm_gray = clr.LinearSegmentedColormap.from_list("gray", [(0, 0, 0), (1, 1, 1)], N=256)
+    cm_red= Image.create_colormap("cm_red", second_color=(1,0,0))
+    cm_green = Image.create_colormap("cm_green", second_color=(0,1,0))
+    cm_blue = Image.create_colormap("cm_blue", second_color=(0,0,1))
+    cm_grey = Image.create_colormap("cm_grey")
 
     # ... ALÍNEA 3 ...
     """ 
     airport.show_img(channel = airport.image, caption = "Img Orig", subplot = 221, first = True)
-    Image.show_img(channel = airport_encoded.R, cmap = "Reds", caption = "R", subplot = 222)
-    Image.show_img(channel = airport_encoded.G, cmap = "Greens", caption = "G", subplot = 223)
-    Image.show_img(channel = airport_encoded.B, cmap = "Blues", caption = "B", subplot = 224, last = True)
+    Image.show_img(channel = airport_encoded.R, cmap = cm_red, caption = "R", subplot = 222)
+    Image.show_img(channel = airport_encoded.G, cmap = cm_green, caption = "G", subplot = 223)
+    Image.show_img(channel = airport_encoded.B, cmap = cm_blue, caption = "B", subplot = 224, last = True)
     """
 
     # ... ALÍNEA 4 ...
@@ -47,12 +47,13 @@ if __name__ == '__main__':
     """
 
     # ... ALÍNEA 5 ...
-    """
-    Image.show_img(channel = airport_encoded.Y, cmap = "Grays", caption = "Y", subplot = 221, first = True)
-    Image.show_img(channel = airport_encoded.Cb, cmap = "Blues", caption = "Cb", subplot = 222)
-    Image.show_img(channel = airport_encoded.Cr, cmap = "Reds", caption = "Cr", subplot = 223)
+    """ 
+    Image.show_img(channel = airport_encoded.Y, cmap = cm_grey, caption = "Y", subplot = 221, first = True)
+    Image.show_img(channel = airport_encoded.Cb, cmap = cm_grey, caption = "Cb", subplot = 222)
+    Image.show_img(channel = airport_encoded.Cr, cmap = cm_grey, caption = "Cr", subplot = 223)
     Image.show_img(channel = airport_decoded.RGB, caption = "Depois", subplot = 224, last = True)
-    
+     """
+    """
     print("PIXEL DE COORDENADA [0, 0] ANTES\t" + str(airport.image[0][0]) +
         "\nPIXEL DE COORDENADA [0, 0] DEPOIS\t" + str(airport_decoded.RGB[0][0]))
     """
@@ -61,51 +62,48 @@ if __name__ == '__main__':
     """
     # COMPARAR Cb
     # ORIGINAL
-    Image.show_img(channel = airport_encoded.Cb, cmap = "Blues", caption = "WITHOUT DOWNSAMPLING", subplot = 221, first = True)
+    Image.show_img(channel = airport_encoded.Cb, cmap = cm_blue, caption = "WITHOUT DOWNSAMPLING", subplot = 221, first = True)
     # CÚBICA
     airport_encoded.downsample_ycbcr(interpolation=cv2.INTER_CUBIC)
-    Image.show_img(channel = airport_encoded.Cb_d, cmap = "Blues", caption = "CUBIC", subplot = 222)
+    Image.show_img(channel = airport_encoded.Cb_d, cmap = cm_blue, caption = "CUBIC", subplot = 222)
     # LANCZOS
     airport_encoded.downsample_ycbcr(interpolation=cv2.INTER_LANCZOS4)
-    Image.show_img(channel = airport_encoded.Cb_d, cmap = "Blues", caption = "CUBIC", subplot = 223)
+    Image.show_img(channel = airport_encoded.Cb_d, cmap = cm_blue, caption = "CUBIC", subplot = 223)
     # LINEAR
-    Image.show_img(channel = airport_encoded.Cb_d, cmap = "Blues", caption = "LINEAR", subplot = 224, last = True)
+    Image.show_img(channel = airport_encoded.Cb_d, cmap = cm_blue, caption = "LINEAR", subplot = 224, last = True)
     
     # COMPARAR Cr
     # ORIGINAL
-    Image.show_img(channel = airport_encoded.Cr, cmap = "Reds", caption = "WITHOUT DOWNSAMPLING", subplot = 221, first = True)
+    Image.show_img(channel = airport_encoded.Cr, cmap = cm_red, caption = "WITHOUT DOWNSAMPLING", subplot = 221, first = True)
     # CÚBICA
     airport_encoded.downsample_ycbcr(interpolation=cv2.INTER_CUBIC)
-    Image.show_img(channel = airport_encoded.Cr_d, cmap = "Reds", caption = "CUBIC", subplot = 222)
+    Image.show_img(channel = airport_encoded.Cr_d, cmap = cm_red, caption = "CUBIC", subplot = 222)
     # LANCZOS
     airport_encoded.downsample_ycbcr(interpolation=cv2.INTER_LANCZOS4)
-    Image.show_img(channel = airport_encoded.Cr_d, cmap = "Reds", caption = "LANCZOS", subplot = 223)
+    Image.show_img(channel = airport_encoded.Cr_d, cmap = cm_red, caption = "LANCZOS", subplot = 223)
     # LINEAR
-    Image.show_img(channel = airport_encoded.Cr_d, cmap = "Reds", caption = "LINEAR", subplot = 224, last = True)
+    Image.show_img(channel = airport_encoded.Cr_d, cmap = cm_red, caption = "LINEAR", subplot = 224, last = True)
 
     # RECONSTRUIR
-    Image.show_img(channel = airport_encoded.Y, cmap = "Greys", caption = "Y Original", subplot = 321, first = True)
-    Image.show_img(channel = airport_decoded.Y_up, cmap = "Greys", caption = "Y Upsampled", subplot = 322)
-    Image.show_img(channel = airport_encoded.Cb, cmap = "Blues", caption = "Cb Original", subplot = 323)
-    Image.show_img(channel = airport_decoded.Cb_up, cmap = "Blues", caption = "Cb Upsampled", subplot = 324)
-    Image.show_img(channel = airport_encoded.Cr, cmap = "Reds", caption = "Cr Original", subplot = 325)
-    Image.show_img(channel = airport_decoded.Cr_up, cmap = "Reds", caption = "Cr Upsampled", subplot = 326, last = True)
+    Image.show_img(channel = airport_encoded.Y, cmap = cm_grey, caption = "Y Original", subplot = 321, first = True)
+    Image.show_img(channel = airport_decoded.Y_up, cmap = cm_grey, caption = "Y Upsampled", subplot = 322)
+    Image.show_img(channel = airport_encoded.Cb, cmap = cm_blue, caption = "Cb Original", subplot = 323)
+    Image.show_img(channel = airport_decoded.Cb_up, cmap = cm_blue, caption = "Cb Upsampled", subplot = 324)
+    Image.show_img(channel = airport_encoded.Cr, cmap = cm_red, caption = "Cr Original", subplot = 325)
+    Image.show_img(channel = airport_decoded.Cr_up, cmap = cm_red, caption = "Cr Upsampled", subplot = 326, last = True)
     """
 
     # ... ALÍNEA 7 ...
-    """
-    Image.show_img(channel = airport_decoded.RGB, caption = "Full", subplot = 221, first = True)
-    Image.show_img(channel = airport_decoded_8x8.RGB, caption = "8x8", subplot = 222)
-    Image.show_img(channel = airport_decoded_64x64.RGB, caption = "64x64", subplot = 223, last = True)
-    """
-    Image.show_img(channel = np.log(np.abs(airport_encoded.Y_DCT) + 0.0001),cmap=cm.Greys_r, caption = "Full - Y_DCT", subplot = 221, first = True)
-    Image.show_img(channel = np.log(np.abs(airport_encoded_8x8.Y_DCT) + 0.0001),cmap=cm.Greys_r, caption = "8x8 - Y_DCT", subplot = 222)
-    Image.show_img(channel = np.log(np.abs(airport_encoded_64x64.Y_DCT) + 0.0001),cmap=cm.Greys_r, caption = "64x64 - Y_DCT", subplot = 223, last = True)
+    """ 
+    Image.show_img(channel = np.log(np.abs(airport_encoded.Y_DCT) + 0.0001),cmap=cm_grey, caption = "Full - Y_DCT", subplot = 331, first = True)
+    Image.show_img(channel = np.log(np.abs(airport_encoded.Cb_DCT) + 0.0001),cmap=cm_grey, caption = "Full - Cb_DCT", subplot = 332)
+    Image.show_img(channel = np.log(np.abs(airport_encoded.Cr_DCT) + 0.0001),cmap=cm_grey, caption = "Full - Cr_DCT", subplot = 333)
 
-    Image.show_img(channel = np.log(np.abs(airport_encoded.Cb_DCT) + 0.0001),cmap=cm.Greys_r, caption = "Full - Cb_DCT", subplot = 221, first = True)
-    Image.show_img(channel = np.log(np.abs(airport_encoded_8x8.Cb_DCT) + 0.0001),cmap=cm.Greys_r, caption = "8x8 - Cb_DCT", subplot = 222)
-    Image.show_img(channel = np.log(np.abs(airport_encoded_64x64.Cb_DCT) + 0.0001),cmap=cm.Greys_r, caption = "64x64 - Cb_DCT", subplot = 223, last = True)
+    Image.show_img(channel = np.log(np.abs(airport_encoded_8x8.Y_DCT) + 0.0001),cmap=cm_grey, caption = "8x8 - Y_DCT", subplot = 334)
+    Image.show_img(channel = np.log(np.abs(airport_encoded_8x8.Cb_DCT) + 0.0001),cmap=cm_grey, caption = "8x8 - Cb_DCT", subplot = 335)
+    Image.show_img(channel = np.log(np.abs(airport_encoded_8x8.Cr_DCT) + 0.0001),cmap=cm_grey, caption = "8x8 - Cr_DCT", subplot = 336)
 
-    Image.show_img(channel = np.log(np.abs(airport_encoded.Cr_DCT) + 0.0001),cmap=cm.Greys_r, caption = "Full - Cr_DCT", subplot = 221, first = True)
-    Image.show_img(channel = np.log(np.abs(airport_encoded_8x8.Cr_DCT) + 0.0001),cmap=cm.Greys_r, caption = "8x8 - Cr_DCT", subplot = 222)
-    Image.show_img(channel = np.log(np.abs(airport_encoded_64x64.Cr_DCT) + 0.0001),cmap=cm.Greys_r, caption = "64x64 - Cr_DCT", subplot = 223, last = True)
+    Image.show_img(channel = np.log(np.abs(airport_encoded_64x64.Y_DCT) + 0.0001),cmap=cm_grey, caption = "64x64 - Y_DCT", subplot = 337)
+    Image.show_img(channel = np.log(np.abs(airport_encoded_64x64.Cb_DCT) + 0.0001),cmap=cm_grey, caption = "64x64 - Cb_DCT", subplot = 338)
+    Image.show_img(channel = np.log(np.abs(airport_encoded_64x64.Cr_DCT) + 0.0001),cmap=cm_grey, caption = "64x64 - Cr_DCT", subplot = 339, last = True)
+     """

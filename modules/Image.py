@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import matplotlib.colors as clr
 
 class Image:
     def __init__(self, image_path):
@@ -17,3 +18,8 @@ class Image:
         plt.interactive(False)
         if(last is True or subplot is None):
             plt.show(block=True)
+
+    @staticmethod
+    def create_colormap(name, first_color = (0,0,0), second_color = (1,1,1), N=256):
+        colors = [first_color,second_color]
+        return clr.LinearSegmentedColormap.from_list(name, colors, N)
