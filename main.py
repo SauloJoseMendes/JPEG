@@ -107,7 +107,7 @@ if __name__ == '__main__':
     Image.show_img(channel = airport_4_2_0.Cr_d, cmap = cm_grey, caption = "Cr downsampling 4:2:0", subplot = 236, last = True)
     """
     # ... ALÍNEA 7 ...
-    """ 
+    
     Image.show_img(channel = np.log(np.abs(airport_encoded.Y_DCT) + 0.0001),cmap=cm_grey, caption = "Full - Y_DCT", subplot = 331, first = True)
     Image.show_img(channel = np.log(np.abs(airport_encoded.Cb_DCT) + 0.0001),cmap=cm_grey, caption = "Full - Cb_DCT", subplot = 332)
     Image.show_img(channel = np.log(np.abs(airport_encoded.Cr_DCT) + 0.0001),cmap=cm_grey, caption = "Full - Cr_DCT", subplot = 333)
@@ -119,4 +119,4 @@ if __name__ == '__main__':
     Image.show_img(channel = np.log(np.abs(airport_encoded_64x64.Y_DCT) + 0.0001),cmap=cm_grey, caption = "64x64 - Y_DCT", subplot = 337)
     Image.show_img(channel = np.log(np.abs(airport_encoded_64x64.Cb_DCT) + 0.0001),cmap=cm_grey, caption = "64x64 - Cb_DCT", subplot = 338)
     Image.show_img(channel = np.log(np.abs(airport_encoded_64x64.Cr_DCT) + 0.0001),cmap=cm_grey, caption = "64x64 - Cr_DCT", subplot = 339, last = True)
-     """
+    

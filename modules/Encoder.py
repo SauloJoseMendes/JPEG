@@ -1,8 +1,42 @@
-import numpy as np
 import cv2
-from scipy.fftpack import dct
+import numpy as np
+from scipy.fft import dct
+
 class Encoder:
-    def __init__(self, img, downsampling_rate = 422, interpolation = cv2.INTER_LINEAR, block_size = None):
+    """
+    This class provides functionality for encoding an image using various techniques.
+    """
+
+    def __init__(self, img, downsampling_rate=422, interpolation=cv2.INTER_LINEAR, block_size=None):
+        """
+        Initializes an encoder object with provided image and parameters.
+
+        Parameters:
+            img (numpy.ndarray): Input image in RGB format.
+            downsampling_rate (int): Downsampling rate for chroma subsampling. Default is 422.
+            interpolation (int): Interpolation method for resizing during downsampling. Default is cv2.INTER_LINEAR.
+            block_size (int or None): Size of the blocks for DCT calculation. If None, DCT is applied to the entire channel without blocking. Default is None.
+
+        Attributes:
+            img (numpy.ndarray): Input image in RGB format.
+            block_size (int or None): Size of the blocks for DCT calculation.
+            downsampling_rate (int): Downsampling rate for chroma subsampling.
+            interpolation (int): Interpolation method for resizing during downsampling.
+            R (numpy.ndarray): Red channel of the image.
+            G (numpy.ndarray): Green channel of the image.
+            B (numpy.ndarray): Blue channel of the image.
+            rows (int): Number of rows in the image.
+            cols (int): Number of columns in the image.
+            Y (numpy.ndarray): Luma (Y) component in YCbCr color space.
+            Cb (numpy.ndarray): Chroma blue (Cb) component in YCbCr color space.
+            Cr (numpy.ndarray): Chroma red (Cr) component in YCbCr color space.
+            Y_d (numpy.ndarray): Downsampled luma (Y) component.
+            Cb_d (numpy.ndarray): Downsampled chroma blue (Cb) component.
+            Cr_d (numpy.ndarray): Downsampled chroma red (Cr) component.
+            Y_DCT (numpy.ndarray): DCT coefficients of downsampled luma (Y) component.
+            Cb_DCT (numpy.ndarray): DCT coefficients of downsampled chroma blue (Cb) component.
+            Cr_DCT (numpy.ndarray): DCT coefficients of downsampled chroma red (Cr) component.
+        """
         self.img = img
         self.block_size = block_size
         self.downsampling_rate = downsampling_rate
@@ -11,22 +45,48 @@ class Encoder:
         self.rows, self.cols = self.R.shape
         self.R, self.G, self.B = self.apply_padding(self.R), self.apply_padding(self.G), self.apply_padding(self.B)
         self.Y, self.Cb, self.Cr = self.convert_to_ycbcr()
-        self.Y_d, self.Cb_d, self.Cr_d = self.downsample_ycbcr(downsampling_rate = downsampling_rate, interpolation = interpolation)
+        self.Y_d, self.Cb_d, self.Cr_d = self.downsample_ycbcr(downsampling_rate=downsampling_rate, interpolation=interpolation)
         self.Y_DCT, self.Cb_DCT, self.Cr_DCT = self.calculate_dct(self.Y_d), self.calculate_dct(self.Cb_d), self.calculate_dct(self.Cr_d)
 
     def split_rgb(self, img):
+        """
+        Splits the input RGB image into its red, green, and blue channels.
+
+        Parameters:
+            img (numpy.ndarray): Input RGB image.
+
+        Returns:
+            tuple: Red, green, and blue channels as numpy arrays.
+        """
         r = img.image[:, :, 0]
         g = img.image[:, :, 1]
         b = img.image[:, :, 2]
         return r, g, b
 
     def apply_padding(self, channel):
+        """
+        Applies padding to the given channel to ensure its dimensions are multiples of 32.
+
+        Parameters:
+            channel (numpy.ndarray): Input channel.
+
+        Returns:
+            numpy.ndarray: Padded channel.
+        """
         channel = self.apply_vertical_padding(channel)
         channel = self.apply_horizontal_padding(channel)
         return channel
 
     def apply_vertical_padding(self, channel):
-        # ........ vertical padding (add rows) ..........
+        """
+        Applies vertical padding to the given channel to ensure its dimensions are multiples of 32.
+
+        Parameters:
+            channel (numpy.ndarray): Input channel.
+
+        Returns:
+            numpy.ndarray: Vertically padded channel.
+        """
         line_n = channel.shape[0]
         vertical_padding = 32 - (line_n % 32)
         vertical_array = np.repeat(channel[-1:, :], vertical_padding, 0)
@@ -34,7 +94,15 @@ class Encoder:
         return channel
 
     def apply_horizontal_padding(self, channel):
-        # ........ horizontal padding (add colums) ..........
+        """
+        Applies horizontal padding to the given channel to ensure its dimensions are multiples of 32.
+
+        Parameters:
+            channel (numpy.ndarray): Input channel.
+
+        Returns:
+            numpy.ndarray: Horizontally padded channel.
+        """
         column_n = channel.shape[1]
         horizontal_padding = 32 - (column_n % 32)
         horizontal_array = np.repeat(channel[:, -1:], horizontal_padding, 1)
@@ -42,6 +110,12 @@ class Encoder:
         return channel
 
     def convert_to_ycbcr(self):
+        """
+        Converts the RGB image to YCbCr color space.
+
+        Returns:
+            tuple: Luma (Y), chroma blue (Cb), and chroma red (Cr) components in YCbCr color space.
+        """
         conversion_matrix = np.array([[1., 0., 1.402],
                                       [1., -0.344136, -0.714136],
                                       [1., 1.772, 0.]])
@@ -57,7 +131,17 @@ class Encoder:
 
         return ycbcr.astype(np.uint8)
     
-    def downsample_ycbcr(self, downsampling_rate = 422, interpolation = cv2.INTER_LINEAR):
+    def downsample_ycbcr(self, downsampling_rate=422, interpolation=cv2.INTER_LINEAR):
+        """
+        Downsamples the chroma blue (Cb) and chroma red (Cr) components based on the specified downsampling rate.
+
+        Parameters:
+            downsampling_rate (int): Downsampling rate for chroma subsampling.
+            interpolation (int): Interpolation method for resizing.
+
+        Returns:
+            tuple: Downsampled luma (Y), chroma blue (Cb), and chroma red (Cr) components.
+        """
         scale_factor_h = 1
         scale_factor_v = 1
         if downsampling_rate == 422:
@@ -73,6 +157,18 @@ class Encoder:
         return self.Y, Cb_d, Cr_d
     
     def calculate_dct(self, channel):
+        """
+        Calculates the Discrete Cosine Transform (DCT) coefficients of the given channel.
+
+        If block_size is None, the entire channel is transformed using DCT.
+        If block_size is specified, the channel is divided into blocks of size block_size x block_size, and DCT is applied to each block.
+
+        Parameters:
+            channel (numpy.ndarray): Input channel for which DCT coefficients are calculated.
+
+        Returns:
+            numpy.ndarray: DCT coefficients of the input channel.
+        """
         if self.block_size is None:
             return dct(dct(channel, norm='ortho').T, norm='ortho').T
         
