@@ -1,5 +1,4 @@
 import numpy as np
-from modules.Encoder import Encoder
 import cv2
 from scipy.fftpack import idct
 
