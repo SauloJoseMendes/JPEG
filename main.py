@@ -95,18 +95,17 @@ if __name__ == '__main__':
     """
 
     # ESCOLHER A MELHOR (LINEAR)
-    print("A")
+    """ 
     airport_4_2_2 = Encoder(airport, downsampling_rate=422)
     Image.show_img(channel = airport_4_2_2.Y_d, cmap = cm_grey, caption = "Y downsampling 4:2:2", subplot = 231, first = True)
     Image.show_img(channel = airport_4_2_2.Cb_d, cmap = cm_grey, caption = "Cb downsampling 4:2:2", subplot = 232)
     Image.show_img(channel = airport_4_2_2.Cr_d, cmap = cm_grey, caption = "Cr downsampling 4:2:2", subplot = 233)
 
-    print("B")
     airport_4_2_0 = Encoder(airport, downsampling_rate=420)
     Image.show_img(channel = airport_4_2_0.Y_d, cmap = cm_grey, caption = "Y downsampling 4:2:0", subplot = 234)
     Image.show_img(channel = airport_4_2_0.Cb_d, cmap = cm_grey, caption = "Cb downsampling 4:2:0", subplot = 235)
     Image.show_img(channel = airport_4_2_0.Cr_d, cmap = cm_grey, caption = "Cr downsampling 4:2:0", subplot = 236, last = True)
-
+    """
     # ... ALÍNEA 7 ...
     """ 
     Image.show_img(channel = np.log(np.abs(airport_encoded.Y_DCT) + 0.0001),cmap=cm_grey, caption = "Full - Y_DCT", subplot = 331, first = True)
