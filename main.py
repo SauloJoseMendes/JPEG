@@ -68,7 +68,7 @@ if __name__ == '__main__':
     Image.show_img(channel = airport_encoded.Cb_d, cmap = cm_blue, caption = "CUBIC", subplot = 222)
     # LANCZOS
     airport_encoded.downsample_ycbcr(interpolation=cv2.INTER_LANCZOS4)
-    Image.show_img(channel = airport_encoded.Cb_d, cmap = cm_blue, caption = "CUBIC", subplot = 223)
+    Image.show_img(channel = airport_encoded.Cb_d, cmap = cm_blue, caption = "LANCZOS", subplot = 223)
     # LINEAR
     Image.show_img(channel = airport_encoded.Cb_d, cmap = cm_blue, caption = "LINEAR", subplot = 224, last = True)
     
