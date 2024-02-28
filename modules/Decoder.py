@@ -41,6 +41,7 @@ class Decoder:
         Returns:
             numpy.ndarray: Reconstructed RGB image.
         """
+        # TO DO: USAR A INVERSA DA MATRIZ DO POWERPOINT 46
         conversion_matrix = np.array([[1., 0., 1.402],
                                       [1., -0.344136, -0.714136],
                                       [1., 1.772, 0.]])
@@ -82,7 +83,7 @@ class Decoder:
         Returns:
             numpy.ndarray: Channel without padding.
         """
-        return channel[: self.encoded_img.rows, : self.encoded_img.cols]
+        return channel[: self.encoded_img.header.rows, : self.encoded_img.header.cols]
     
     def upsample_ycbcr(self):
         """
@@ -93,7 +94,7 @@ class Decoder:
         """
         # Get the dimensions of the original Y channel
         original_height, original_width = self.Y_d.shape
-        interpolation = self.encoded_img.interpolation
+        interpolation = self.encoded_img.header.interpolation
         # Resize the Cb and Cr channels to match the original Y channel dimensions
         Cb_up = cv2.resize(self.Cb_d, (original_width, original_height), interpolation=interpolation)
         Cr_up = cv2.resize(self.Cr_d, (original_width, original_height), interpolation=interpolation)
@@ -112,14 +113,14 @@ class Decoder:
         Returns:
             numpy.ndarray: Reconstructed channel.
         """
-        if self.encoded_img.block_size is None:
+        if self.encoded_img.header.block_size is None:
             return idct(idct(channel_dct, norm='ortho').T, norm='ortho').T
         
         channel_shape = channel_dct.shape
         channel = np.zeros(channel_shape)
 
-        for i in range(0, channel_shape[0], self.encoded_img.block_size):
-            for j in range(0, channel_shape[1], self.encoded_img.block_size):
-                channel[i:i+self.encoded_img.block_size, j:j+self.encoded_img.block_size] = idct(idct(channel_dct[i:i+self.encoded_img.block_size, j:j+self.encoded_img.block_size], norm='ortho').T, norm='ortho').T
+        for i in range(0, channel_shape[0], self.encoded_img.header.block_size):
+            for j in range(0, channel_shape[1], self.encoded_img.header.block_size):
+                channel[i:i+self.encoded_img.header.block_size, j:j+self.encoded_img.header.block_size] = idct(idct(channel_dct[i:i+self.encoded_img.header.block_size, j:j+self.encoded_img.header.block_size], norm='ortho').T, norm='ortho').T
         
         return channel

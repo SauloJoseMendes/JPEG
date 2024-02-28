@@ -1,6 +1,7 @@
 from modules import plt, clr, np, cv2, cm
 from modules.Encoder import Encoder
 from modules.Image import Image
+from modules.Header import Header
 from modules.Decoder import Decoder
 
 if __name__ == '__main__':
@@ -14,8 +15,15 @@ if __name__ == '__main__':
     nature_encoded = Encoder(nature)
     geometric_encoded = Encoder(geometric)
 
-    airport_encoded_8x8 = Encoder(airport, block_size=8)
-    airport_encoded_64x64 = Encoder(airport, block_size=64)
+    airport_encoded_lanczos = Encoder(airport, Header(interpolation=cv2.INTER_LANCZOS4))
+    airport_encoded_cubic = Encoder(airport, Header(interpolation=cv2.INTER_CUBIC))
+
+    airport_4_2_2 = Encoder(airport, Header(downsampling_rate=422))
+    airport_4_2_0 = Encoder(airport, Header(downsampling_rate=420))
+
+    airport_encoded_8x8 = Encoder(airport, Header(block_size=8))
+    airport_encoded_64x64 = Encoder(airport, Header(block_size=64))
+
 
     # ... IMAGES DECODED ...
     airport_decoded = Decoder(airport_encoded)
@@ -61,27 +69,15 @@ if __name__ == '__main__':
     # ... ALÍNEA 6 ...
     """
     # COMPARAR Cb
-    # ORIGINAL
     Image.show_img(channel = airport_encoded.Cb, cmap = cm_blue, caption = "WITHOUT DOWNSAMPLING", subplot = 221, first = True)
-    # CÚBICA
-    airport_encoded.downsample_ycbcr(interpolation=cv2.INTER_CUBIC)
     Image.show_img(channel = airport_encoded.Cb_d, cmap = cm_blue, caption = "CUBIC", subplot = 222)
-    # LANCZOS
-    airport_encoded.downsample_ycbcr(interpolation=cv2.INTER_LANCZOS4)
     Image.show_img(channel = airport_encoded.Cb_d, cmap = cm_blue, caption = "LANCZOS", subplot = 223)
-    # LINEAR
     Image.show_img(channel = airport_encoded.Cb_d, cmap = cm_blue, caption = "LINEAR", subplot = 224, last = True)
     
     # COMPARAR Cr
-    # ORIGINAL
     Image.show_img(channel = airport_encoded.Cr, cmap = cm_red, caption = "WITHOUT DOWNSAMPLING", subplot = 221, first = True)
-    # CÚBICA
-    airport_encoded.downsample_ycbcr(interpolation=cv2.INTER_CUBIC)
     Image.show_img(channel = airport_encoded.Cr_d, cmap = cm_red, caption = "CUBIC", subplot = 222)
-    # LANCZOS
-    airport_encoded.downsample_ycbcr(interpolation=cv2.INTER_LANCZOS4)
     Image.show_img(channel = airport_encoded.Cr_d, cmap = cm_red, caption = "LANCZOS", subplot = 223)
-    # LINEAR
     Image.show_img(channel = airport_encoded.Cr_d, cmap = cm_red, caption = "LINEAR", subplot = 224, last = True)
     """
     """
@@ -96,18 +92,16 @@ if __name__ == '__main__':
 
     # ESCOLHER A MELHOR (LINEAR)
     """ 
-    airport_4_2_2 = Encoder(airport, downsampling_rate=422)
     Image.show_img(channel = airport_4_2_2.Y_d, cmap = cm_grey, caption = "Y downsampling 4:2:2", subplot = 231, first = True)
     Image.show_img(channel = airport_4_2_2.Cb_d, cmap = cm_grey, caption = "Cb downsampling 4:2:2", subplot = 232)
     Image.show_img(channel = airport_4_2_2.Cr_d, cmap = cm_grey, caption = "Cr downsampling 4:2:2", subplot = 233)
 
-    airport_4_2_0 = Encoder(airport, downsampling_rate=420)
     Image.show_img(channel = airport_4_2_0.Y_d, cmap = cm_grey, caption = "Y downsampling 4:2:0", subplot = 234)
     Image.show_img(channel = airport_4_2_0.Cb_d, cmap = cm_grey, caption = "Cb downsampling 4:2:0", subplot = 235)
     Image.show_img(channel = airport_4_2_0.Cr_d, cmap = cm_grey, caption = "Cr downsampling 4:2:0", subplot = 236, last = True)
     """
     # ... ALÍNEA 7 ...
-    
+    """
     Image.show_img(channel = np.log(np.abs(airport_encoded.Y_DCT) + 0.0001),cmap=cm_grey, caption = "Full - Y_DCT", subplot = 331, first = True)
     Image.show_img(channel = np.log(np.abs(airport_encoded.Cb_DCT) + 0.0001),cmap=cm_grey, caption = "Full - Cb_DCT", subplot = 332)
     Image.show_img(channel = np.log(np.abs(airport_encoded.Cr_DCT) + 0.0001),cmap=cm_grey, caption = "Full - Cr_DCT", subplot = 333)
@@ -119,4 +113,4 @@ if __name__ == '__main__':
     Image.show_img(channel = np.log(np.abs(airport_encoded_64x64.Y_DCT) + 0.0001),cmap=cm_grey, caption = "64x64 - Y_DCT", subplot = 337)
     Image.show_img(channel = np.log(np.abs(airport_encoded_64x64.Cb_DCT) + 0.0001),cmap=cm_grey, caption = "64x64 - Cb_DCT", subplot = 338)
     Image.show_img(channel = np.log(np.abs(airport_encoded_64x64.Cr_DCT) + 0.0001),cmap=cm_grey, caption = "64x64 - Cr_DCT", subplot = 339, last = True)
-    
+    """
