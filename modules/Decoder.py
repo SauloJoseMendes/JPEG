@@ -27,7 +27,8 @@ class Decoder:
             encoded_img (Encoder): An instance of the Encoder class representing the encoded image.
         """
         self.encoded_img = encoded_img
-        self.Y_d, self.Cb_d, self.Cr_d = self.calculate_idct(self.encoded_img.Y_DCT), self.calculate_idct(self.encoded_img.Cb_DCT), self.calculate_idct(self.encoded_img.Cr_DCT)
+        self.Y_DCT, self.Cb_DCT, self.Cr_DCT = self.inv_quantize(self.encoded_img.Y_Q,is_y=1), self.inv_quantize(self.encoded_img.Cb_Q,is_y=0), self.inv_quantize(self.encoded_img.Cr_Q,is_y=0)
+        self.Y_d, self.Cb_d, self.Cr_d = self.calculate_idct(self.Y_DCT), self.calculate_idct(self.Cb_DCT), self.calculate_idct(self.Cr_DCT)
         self.Y_up, self.Cb_up, self.Cr_up = self.upsample_ycbcr()
         self.R, self.G, self.B = self.convert_to_rgb()
         self.R, self.G, self.B = self.remove_padding(self.R), self.remove_padding(self.G), self.remove_padding(self.B)
@@ -124,3 +125,48 @@ class Decoder:
                 channel[i:i+self.encoded_img.header.block_size, j:j+self.encoded_img.header.block_size] = idct(idct(channel_dct[i:i+self.encoded_img.header.block_size, j:j+self.encoded_img.header.block_size], norm='ortho').T, norm='ortho').T
         
         return channel
+    
+    def inv_quantize(self, channel, is_y, quality_factor = 75):
+        channel_shape = channel.shape
+        Q_channel = np.zeros(channel_shape)
+
+        Q_Y=np.array([[16,11,10,16,24,40,51,61],
+                      [12,12,14,19,26,58,60,55],
+                      [14,13,16,24,40,57,69,56],
+                      [14,17,22,29,51,87,80,62],
+                      [18,22,37,56,68,109,103,77],
+                      [24,35,55,64,81,104,113,92],
+                      [49,64,78,87,103,121,120,101],
+                      [72,92,95,98,112,100,103,99]])
+        
+        Q_CbCr=np.array([[17,18,24,47,99,99,99,99],
+                         [18,21,26,66,99,99,99,99],
+                         [24,26,56,99,99,99,99,99],
+                         [47,66,99,99,99,99,99,99],
+                         [99,99,99,99,99,99,99,99],
+                         [99,99,99,99,99,99,99,99],
+                         [99,99,99,99,99,99,99,99],
+                         [99,99,99,99,99,99,99,99]])
+        
+        if is_y:
+            quant_matrix = Q_Y
+        else:
+            quant_matrix = Q_CbCr
+
+        if quality_factor >= 50:
+            sf = (100 - quality_factor) / 50
+        else:
+            sf = 50 / quality_factor
+        
+        if sf != 0:
+            qsf = np.round(quant_matrix * sf)
+            qsf = np.clip(qsf, 1, 255)
+
+            for i in range(0, channel_shape[0], 8):
+                for j in range(0, channel_shape[1], 8):
+                    Q_channel[i:i+8, j:j+8] = np.multiply(channel[i:i+8, j:j+8], qsf)
+            Q_channel = np.round(Q_channel)
+        else:
+            Q_channel = channel
+
+        return Q_channel

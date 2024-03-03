@@ -45,6 +45,7 @@ class Encoder:
         self.Y, self.Cb, self.Cr = self.convert_to_ycbcr()
         self.Y_d, self.Cb_d, self.Cr_d = self.downsample_ycbcr()
         self.Y_DCT, self.Cb_DCT, self.Cr_DCT = self.calculate_dct(self.Y_d), self.calculate_dct(self.Cb_d), self.calculate_dct(self.Cr_d)
+        self.Y_Q, self.Cb_Q, self.Cr_Q = self.quantize(self.Y_DCT,is_y=1), self.quantize(self.Cb_DCT,is_y=0), self.quantize(self.Cr_DCT,is_y=0)
 
     def split_rgb(self, img):
         """
@@ -179,3 +180,49 @@ class Encoder:
                 channel_dct[i:i+self.header.block_size, j:j+self.header.block_size] = dct(dct(channel[i:i+self.header.block_size, j:j+self.header.block_size], norm='ortho').T, norm='ortho').T
         
         return channel_dct
+    
+    def quantize(self, channel, is_y, quality_factor = 75):
+        channel_shape = channel.shape
+        Q_channel = np.zeros(channel_shape)
+
+        Q_Y=np.array([[16,11,10,16,24,40,51,61],
+                      [12,12,14,19,26,58,60,55],
+                      [14,13,16,24,40,57,69,56],
+                      [14,17,22,29,51,87,80,62],
+                      [18,22,37,56,68,109,103,77],
+                      [24,35,55,64,81,104,113,92],
+                      [49,64,78,87,103,121,120,101],
+                      [72,92,95,98,112,100,103,99]])
+        
+        Q_CbCr=np.array([[17,18,24,47,99,99,99,99],
+                         [18,21,26,66,99,99,99,99],
+                         [24,26,56,99,99,99,99,99],
+                         [47,66,99,99,99,99,99,99],
+                         [99,99,99,99,99,99,99,99],
+                         [99,99,99,99,99,99,99,99],
+                         [99,99,99,99,99,99,99,99],
+                         [99,99,99,99,99,99,99,99]])
+        
+        if is_y:
+            quant_matrix = Q_Y
+        else:
+            quant_matrix = Q_CbCr
+
+        if quality_factor >= 50:
+            sf = (100 - quality_factor) / 50
+        else:
+            sf = 50 / quality_factor
+        
+        if sf != 0:
+            qsf = np.round(quant_matrix * sf)
+            qsf = np.clip(qsf, 1, 255)
+
+            for i in range(0, channel_shape[0], 8):
+                for j in range(0, channel_shape[1], 8):
+                    Q_channel[i:i+8, j:j+8] = np.divide(channel[i:i+8, j:j+8], qsf)
+            Q_channel = np.round(Q_channel)
+        else:
+            Q_channel = channel
+
+        return Q_channel
+    
