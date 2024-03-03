@@ -9,3 +9,4 @@ class Header:
         self.block_size = block_size
         self.rows = 0 
         self.columns = 0
+        self.quality_factor = 75

@@ -126,7 +126,8 @@ class Decoder:
         
         return channel
     
-    def inv_quantize(self, channel, is_y, quality_factor = 75):
+    def inv_quantize(self, channel, is_y):
+
         channel_shape = channel.shape
         Q_channel = np.zeros(channel_shape)
 
@@ -153,10 +154,10 @@ class Decoder:
         else:
             quant_matrix = Q_CbCr
 
-        if quality_factor >= 50:
-            sf = (100 - quality_factor) / 50
+        if self.header.quality_factor >= 50:
+            sf = (100 - self.header.quality_factor) / 50
         else:
-            sf = 50 / quality_factor
+            sf = 50 / self.header.quality_factor
         
         if sf != 0:
             qsf = np.round(quant_matrix * sf)
