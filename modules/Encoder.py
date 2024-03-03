@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 from scipy.fft import dct
-from modules.Header import Header
+from Header import Header
 class Encoder:
     """
     This class provides functionality for encoding an image using various techniques.
