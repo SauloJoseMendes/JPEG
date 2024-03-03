@@ -178,12 +178,9 @@ class Encoder:
         return channel_dct
     
     def quantize(self, channel, is_y):
-
         channel_shape = channel.shape
         Q_channel = np.zeros(channel_shape)
 
-        
-        
         if is_y:
             quant_matrix = Q_Y
         else:
@@ -206,4 +203,3 @@ class Encoder:
             Q_channel = channel
 
         return Q_channel
-    

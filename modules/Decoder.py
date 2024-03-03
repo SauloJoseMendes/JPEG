@@ -124,7 +124,6 @@ class Decoder:
         return channel
     
     def inv_quantize(self, channel, is_y):
-
         channel_shape = channel.shape
         Q_channel = np.zeros(channel_shape)
         
