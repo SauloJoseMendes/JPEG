@@ -2,6 +2,8 @@ import cv2
 import numpy as np
 from scipy.fft import dct
 from modules.Header import Header
+from modules.Constants import *
+
 class Encoder:
     """
     This class provides functionality for encoding an image using various techniques.
@@ -115,16 +117,10 @@ class Encoder:
         Returns:
             tuple: Luma (Y), chroma blue (Cb), and chroma red (Cr) components in YCbCr color space.
         """
-        ### TO DO: ALTERAR A MATRIZ PARA A DO SLIDE 46
-        conversion_matrix = np.array([[1., 0., 1.402],
-                                      [1., -0.344136, -0.714136],
-                                      [1., 1.772, 0.]])
-        
-        conversion_matrix_inversed = np.linalg.inv(conversion_matrix)
 
         rgb = np.stack((self.R, self.G, self.B))
 
-        ycbcr = np.dot(conversion_matrix_inversed, rgb.reshape(3, -1)) + np.array([[0], [128], [128]])
+        ycbcr = np.dot(conversion_matrix, rgb.reshape(3, -1)) + YCbCr_offset
         ycbcr = np.round(ycbcr)
         ycbcr = np.clip(ycbcr, 0, 255)
         ycbcr = ycbcr.reshape(rgb.shape)
@@ -186,23 +182,7 @@ class Encoder:
         channel_shape = channel.shape
         Q_channel = np.zeros(channel_shape)
 
-        Q_Y=np.array([[16,11,10,16,24,40,51,61],
-                      [12,12,14,19,26,58,60,55],
-                      [14,13,16,24,40,57,69,56],
-                      [14,17,22,29,51,87,80,62],
-                      [18,22,37,56,68,109,103,77],
-                      [24,35,55,64,81,104,113,92],
-                      [49,64,78,87,103,121,120,101],
-                      [72,92,95,98,112,100,103,99]])
         
-        Q_CbCr=np.array([[17,18,24,47,99,99,99,99],
-                         [18,21,26,66,99,99,99,99],
-                         [24,26,56,99,99,99,99,99],
-                         [47,66,99,99,99,99,99,99],
-                         [99,99,99,99,99,99,99,99],
-                         [99,99,99,99,99,99,99,99],
-                         [99,99,99,99,99,99,99,99],
-                         [99,99,99,99,99,99,99,99]])
         
         if is_y:
             quant_matrix = Q_Y
