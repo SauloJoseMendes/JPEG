@@ -116,6 +116,6 @@ if __name__ == '__main__':
     """
 
     # ... ALÍNEA 8 ...
-    Image.show_img(channel = np.log(np.abs(airport_encoded_8x8.Y_Q) + 0.0001),cmap=cm_grey, caption = "Y_Q", subplot = 331, first = True)
-    Image.show_img(channel = np.log(np.abs(airport_encoded_8x8.Cb_Q) + 0.0001),cmap=cm_grey, caption = "Cb_Q", subplot = 332)
-    Image.show_img(channel = np.log(np.abs(airport_encoded_8x8.Cr_Q) + 0.0001),cmap=cm_grey, caption = "Cr_Q", subplot = 333 , last = True)
+    Image.show_img(channel = np.log(np.abs(airport_encoded_8x8.Y_Q) + 0.0001),cmap=cm_grey, caption = "Y_Q", subplot = 131, first = True)
+    Image.show_img(channel = np.log(np.abs(airport_encoded_8x8.Cb_Q) + 0.0001),cmap=cm_grey, caption = "Cb_Q", subplot = 132)
+    Image.show_img(channel = np.log(np.abs(airport_encoded_8x8.Cr_Q) + 0.0001),cmap=cm_grey, caption = "Cr_Q", subplot = 133 , last = True)

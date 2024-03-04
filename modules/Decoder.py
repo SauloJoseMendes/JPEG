@@ -1,7 +1,6 @@
 import numpy as np
 import cv2
 from scipy.fftpack import idct
-from modules.Constants import *
 
 class Decoder:
     """
@@ -28,6 +27,7 @@ class Decoder:
             encoded_img (Encoder): An instance of the Encoder class representing the encoded image.
         """
         self.encoded_img = encoded_img
+        self.header = encoded_img.header
         self.Y_DCT, self.Cb_DCT, self.Cr_DCT = self.inv_quantize(self.encoded_img.Y_Q,is_y=1), self.inv_quantize(self.encoded_img.Cb_Q,is_y=0), self.inv_quantize(self.encoded_img.Cr_Q,is_y=0)
         self.Y_d, self.Cb_d, self.Cr_d = self.calculate_idct(self.Y_DCT), self.calculate_idct(self.Cb_DCT), self.calculate_idct(self.Cr_DCT)
         self.Y_up, self.Cb_up, self.Cr_up = self.upsample_ycbcr()
@@ -45,7 +45,7 @@ class Decoder:
         """
 
         ycbcr = np.stack((self.Y_up, self.Cb_up, self.Cr_up))
-        rgb = np.dot(conversion_matrix_inversed, ycbcr.reshape(3, -1) - YCbCr_offset)
+        rgb = np.dot(self.header.conversion_matrix_inversed, ycbcr.reshape(3, -1) - self.header.YCbCr_offset)
         rgb = np.round(rgb)
         rgb = np.clip(rgb, 0, 255)
         rgb = rgb.reshape(ycbcr.shape)
@@ -81,7 +81,7 @@ class Decoder:
         Returns:
             numpy.ndarray: Channel without padding.
         """
-        return channel[: self.encoded_img.header.rows, : self.encoded_img.header.cols]
+        return channel[: self.header.rows, : self.header.cols]
     
     def upsample_ycbcr(self):
         """
@@ -92,7 +92,7 @@ class Decoder:
         """
         # Get the dimensions of the original Y channel
         original_height, original_width = self.Y_d.shape
-        interpolation = self.encoded_img.header.interpolation
+        interpolation = self.header.interpolation
         # Resize the Cb and Cr channels to match the original Y channel dimensions
         Cb_up = cv2.resize(self.Cb_d, (original_width, original_height), interpolation=interpolation)
         Cr_up = cv2.resize(self.Cr_d, (original_width, original_height), interpolation=interpolation)
@@ -111,15 +111,15 @@ class Decoder:
         Returns:
             numpy.ndarray: Reconstructed channel.
         """
-        if self.encoded_img.header.block_size is None:
+        if self.header.block_size is None:
             return idct(idct(channel_dct, norm='ortho').T, norm='ortho').T
         
         channel_shape = channel_dct.shape
         channel = np.zeros(channel_shape)
 
-        for i in range(0, channel_shape[0], self.encoded_img.header.block_size):
-            for j in range(0, channel_shape[1], self.encoded_img.header.block_size):
-                channel[i:i+self.encoded_img.header.block_size, j:j+self.encoded_img.header.block_size] = idct(idct(channel_dct[i:i+self.encoded_img.header.block_size, j:j+self.encoded_img.header.block_size], norm='ortho').T, norm='ortho').T
+        for i in range(0, channel_shape[0], self.header.block_size):
+            for j in range(0, channel_shape[1], self.header.block_size):
+                channel[i:i+self.header.block_size, j:j+self.header.block_size] = idct(idct(channel_dct[i:i+self.header.block_size, j:j+self.header.block_size], norm='ortho').T, norm='ortho').T
         
         return channel
     
@@ -128,14 +128,14 @@ class Decoder:
         Q_channel = np.zeros(channel_shape)
         
         if is_y:
-            quant_matrix = Q_Y
+            quant_matrix = self.header.Q_Y
         else:
-            quant_matrix = Q_CbCr
+            quant_matrix = self.header.Q_CbCr
 
-        if self.encoded_img.header.quality_factor >= 50:
-            sf = (100 - self.encoded_img.header.quality_factor) / 50
+        if self.header.quality_factor >= 50:
+            sf = (100 - self.header.quality_factor) / 50
         else:
-            sf = 50 / self.encoded_img.header.quality_factor
+            sf = 50 / self.header.quality_factor
         
         if sf != 0:
             qsf = np.round(quant_matrix * sf)

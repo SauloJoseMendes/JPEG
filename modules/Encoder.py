@@ -2,7 +2,6 @@ import cv2
 import numpy as np
 from scipy.fft import dct
 from modules.Header import Header
-from modules.Constants import *
 
 class Encoder:
     """
@@ -120,7 +119,7 @@ class Encoder:
 
         rgb = np.stack((self.R, self.G, self.B))
 
-        ycbcr = np.dot(conversion_matrix, rgb.reshape(3, -1)) + YCbCr_offset
+        ycbcr = np.dot(self.header.conversion_matrix, rgb.reshape(3, -1)) + self.header.YCbCr_offset
         ycbcr = np.round(ycbcr)
         ycbcr = np.clip(ycbcr, 0, 255)
         ycbcr = ycbcr.reshape(rgb.shape)
@@ -182,9 +181,9 @@ class Encoder:
         Q_channel = np.zeros(channel_shape)
 
         if is_y:
-            quant_matrix = Q_Y
+            quant_matrix = self.header.Q_Y
         else:
-            quant_matrix = Q_CbCr
+            quant_matrix = self.header.Q_CbCr
 
         if self.header.quality_factor >= 50:
             sf = (100 - self.header.quality_factor) / 50
