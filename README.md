@@ -7,7 +7,6 @@
 │   └───nature.bmp
 ├───modules
 │   ├───__init__.py
-│   ├───Constants.py
 │   ├───Decoder.py
 │   ├───Encoder.py
 │   ├───Header.py
