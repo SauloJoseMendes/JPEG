@@ -29,7 +29,7 @@ class Header:
                     [99,99,99,99,99,99,99,99],
                     [99,99,99,99,99,99,99,99]])
 
-    def __init__(self, downsampling_rate=422, interpolation=cv2.INTER_LINEAR, block_size=None, quality_factor = 75):
+    def __init__(self, downsampling_rate=422, interpolation=cv2.INTER_LINEAR, block_size = 8, quality_factor = 75):
         self.downsampling_rate = downsampling_rate
         self.interpolation = interpolation
         self.block_size = block_size

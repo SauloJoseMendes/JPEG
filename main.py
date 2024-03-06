@@ -11,7 +11,7 @@ if __name__ == '__main__':
     geometric = Image("imagens/geometric.bmp")
 
     # ... IMAGES ENCODED ...
-    airport_encoded = Encoder(airport)
+    airport_encoded = Encoder(airport, Header(block_size = None))
     nature_encoded = Encoder(nature)
     geometric_encoded = Encoder(geometric)
 
@@ -21,7 +21,7 @@ if __name__ == '__main__':
     airport_4_2_2 = Encoder(airport, Header(downsampling_rate=422))
     airport_4_2_0 = Encoder(airport, Header(downsampling_rate=420))
 
-    airport_encoded_8x8 = Encoder(airport, Header(block_size=8))
+    airport_encoded_8x8 = Encoder(airport)
     airport_encoded_64x64 = Encoder(airport, Header(block_size=64))
 
 
@@ -131,3 +131,6 @@ if __name__ == '__main__':
     print(airport_encoded_8x8.Y_DPCM[8:16,8:16])
     print(".....Y_Q DECODED BLOCK 1.....")
     print(airport_decoded_8x8.Y_Q[8:16,8:16])
+
+    # ... ALÍNEA 10 ...
+
