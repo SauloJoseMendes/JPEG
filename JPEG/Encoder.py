@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 from scipy.fft import dct
-from modules.Header import Header
+from JPEG.Header import Header
 
 class Encoder:
     """

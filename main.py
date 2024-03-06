@@ -1,8 +1,8 @@
-from modules import plt, clr, np, cv2, cm
-from modules.Encoder import Encoder
-from modules.Image import Image
-from modules.Header import Header
-from modules.Decoder import Decoder
+from JPEG import plt, clr, np, cv2, cm
+from JPEG.Encoder import Encoder
+from JPEG.Image import Image
+from JPEG.Header import Header
+from JPEG.Decoder import Decoder
 
 if __name__ == '__main__':
     # ... IMAGES ...
