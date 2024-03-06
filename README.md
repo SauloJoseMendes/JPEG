@@ -5,9 +5,8 @@
 │   ├───airport.bmp
 │   ├───geometric.bmp
 │   └───nature.bmp
-├───modules
+├───JPEG
 │   ├───__init__.py
-│   ├───Constants.py
 │   ├───Decoder.py
 │   ├───Encoder.py
 │   ├───Header.py
