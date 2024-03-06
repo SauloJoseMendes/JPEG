@@ -28,7 +28,8 @@ class Decoder:
         """
         self.encoded_img = encoded_img
         self.header = encoded_img.header
-        self.Y_DCT, self.Cb_DCT, self.Cr_DCT = self.inv_quantize(self.encoded_img.Y_Q,is_y=1), self.inv_quantize(self.encoded_img.Cb_Q,is_y=0), self.inv_quantize(self.encoded_img.Cr_Q,is_y=0)
+        self.Y_Q, self.Cb_Q, self.Cr_Q= self.apply_iDPCM(self.encoded_img.Y_DPCM), self.apply_iDPCM(self.encoded_img.Cb_DPCM), self.apply_iDPCM(self.encoded_img.Cr_DPCM)
+        self.Y_DCT, self.Cb_DCT, self.Cr_DCT = self.inv_quantize(self.Y_Q,is_y=1), self.inv_quantize(self.Cb_Q,is_y=0), self.inv_quantize(self.Cr_Q,is_y=0)
         self.Y_d, self.Cb_d, self.Cr_d = self.calculate_idct(self.Y_DCT), self.calculate_idct(self.Cb_DCT), self.calculate_idct(self.Cr_DCT)
         self.Y_up, self.Cb_up, self.Cr_up = self.upsample_ycbcr()
         self.R, self.G, self.B = self.convert_to_rgb()
@@ -149,3 +150,20 @@ class Decoder:
             Q_channel = channel
 
         return Q_channel
+    
+    def apply_iDPCM(self, channel):
+        new_channel = np.zeros(channel.shape, dtype= np.int16)
+        block_size = 8
+        past_block = channel[0:block_size, 0:block_size]
+        new_channel[0:block_size, 0:block_size] = channel[0:block_size, 0:block_size]
+        # ....... DIVIDE CHANNEL IN BLOCKS OF SIZE N ..........
+        for row_block in range(block_size, channel.shape[0] - block_size, block_size):
+            for column_block in range(block_size, channel.shape[1] - block_size, block_size):
+                block = channel[row_block : row_block + block_size, column_block : column_block + block_size]
+                # ....... ITERATE THROUGH BLOCK ..........
+                for row in range(0, block.shape[0]):
+                    for column in range(0, block.shape[1]):
+                        # ....... THE iDPCM IS THE ADDITION OF THE VALUES OF THIS BLOCK AND THE PAST BLOCK ..........
+                            new_channel[row_block + row, column_block + column] = block[row,column] + past_block[row,column]
+                past_block = channel[row_block : row_block + block_size, column_block : column_block + block_size]
+        return new_channel

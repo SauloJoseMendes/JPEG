@@ -47,6 +47,7 @@ class Encoder:
         self.Y_d, self.Cb_d, self.Cr_d = self.downsample_ycbcr()
         self.Y_DCT, self.Cb_DCT, self.Cr_DCT = self.calculate_dct(self.Y_d), self.calculate_dct(self.Cb_d), self.calculate_dct(self.Cr_d)
         self.Y_Q, self.Cb_Q, self.Cr_Q = self.quantize(self.Y_DCT,is_y=1), self.quantize(self.Cb_DCT,is_y=0), self.quantize(self.Cr_DCT,is_y=0)
+        self.Y_DPCM, self.Cb_DPCM, self.Cr_DPCM= self.apply_DPCM(self.Y_Q), self.apply_DPCM(self.Cb_Q), self.apply_DPCM(self.Cr_Q)
 
     def split_rgb(self, img):
         """
@@ -201,4 +202,25 @@ class Encoder:
         else:
             Q_channel = channel
 
-        return Q_channel
+        return Q_channel.astype(np.int16)
+
+    def apply_DPCM(self,channel):
+        new_channel = np.zeros(channel.shape, dtype= np.int16)
+        block_size = 8
+        past_block = channel[0:block_size, 0:block_size]
+        new_channel[0:block_size, 0:block_size] = channel[0:block_size, 0:block_size]
+        # ....... DIVIDE CHANNEL IN BLOCKS OF SIZE N ..........
+        for row_block in range(block_size, channel.shape[0] - block_size, block_size):
+            for column_block in range(block_size, channel.shape[1] - block_size, block_size):
+                block = channel[row_block : row_block + block_size, column_block : column_block + block_size]
+                # ....... ITERATE THROUGH BLOCK ..........
+                for row in range(0, block.shape[0]):
+                    for column in range(0, block.shape[1]):
+                        # ....... THE DPCM IS THE DIFFERENCE BETWEEN THE VALUES OF THIS BLOCK AND THE PAST BLOCK ..........
+                            new_channel[row_block + row, column_block + column] = block[row,column] - past_block[row,column]
+                past_block = channel[row_block : row_block + block_size, column_block : column_block + block_size]
+        return new_channel
+    
+        
+
+
