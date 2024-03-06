@@ -151,21 +151,17 @@ class Decoder:
 
         return Q_channel
     
-    def apply_iDPCM(self, channel):
-        channel_shape = channel.shape
+    def apply_iDPCM(self, dpcm):
+        channel_shape = dpcm.shape
+        channel = np.copy(dpcm)
 
-        dpcm = np.zeros(channel_shape, dtype= np.int16)
-        block_size = 8
+        for r in range(0, channel_shape[0], 8):
+            for c in range(0, channel_shape[1], 8):
+                if r == 0 and c == 0:
+                    continue
+                if c == 0:
+                    channel[r:r+8, 0:8] = channel[r:r+8, 0:8] + channel[r-8:r, channel_shape[1]-8:channel_shape[1]]
+                else:
+                    channel[r:r+8, c:c+8] = channel[r:r+8, c:c+8] + channel[r:r+8, c-8:c]
 
-        past_block = channel[0:block_size, 0:block_size]
-        dpcm[0:block_size, 0:block_size] = channel[0:block_size, 0:block_size]
-
-        # ....... DIVIDE CHANNEL IN BLOCKS OF SIZE 8 ..........
-        for row_block in range(block_size, channel_shape[0] - block_size, block_size):
-            for column_block in range(block_size, channel_shape[1] - block_size, block_size):
-                block = channel[row_block : row_block + block_size, column_block : column_block + block_size]
-                
-                dpcm[row_block : row_block + block_size, column_block : column_block + block_size] = block + past_block
-
-                past_block = block
-        return dpcm
+        return channel
