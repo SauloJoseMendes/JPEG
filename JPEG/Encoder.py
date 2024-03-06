@@ -204,23 +204,21 @@ class Encoder:
 
         return Q_channel.astype(np.int16)
 
-    def apply_DPCM(self,channel):
-        new_channel = np.zeros(channel.shape, dtype= np.int16)
+    def apply_DPCM(self, channel):
+        channel_shape = channel.shape
+
+        dpcm = np.zeros(channel_shape, dtype= np.int16)
         block_size = 8
+
         past_block = channel[0:block_size, 0:block_size]
-        new_channel[0:block_size, 0:block_size] = channel[0:block_size, 0:block_size]
-        # ....... DIVIDE CHANNEL IN BLOCKS OF SIZE N ..........
-        for row_block in range(block_size, channel.shape[0] - block_size, block_size):
-            for column_block in range(block_size, channel.shape[1] - block_size, block_size):
+        dpcm[0:block_size, 0:block_size] = channel[0:block_size, 0:block_size]
+
+        # ....... DIVIDE CHANNEL IN BLOCKS OF SIZE 8 ..........
+        for row_block in range(block_size, channel_shape[0] - block_size, block_size):
+            for column_block in range(block_size, channel_shape[1] - block_size, block_size):
                 block = channel[row_block : row_block + block_size, column_block : column_block + block_size]
-                # ....... ITERATE THROUGH BLOCK ..........
-                for row in range(0, block.shape[0]):
-                    for column in range(0, block.shape[1]):
-                        # ....... THE DPCM IS THE DIFFERENCE BETWEEN THE VALUES OF THIS BLOCK AND THE PAST BLOCK ..........
-                            new_channel[row_block + row, column_block + column] = block[row,column] - past_block[row,column]
-                past_block = channel[row_block : row_block + block_size, column_block : column_block + block_size]
-        return new_channel
-    
-        
+                
+                dpcm[row_block : row_block + block_size, column_block : column_block + block_size] = block - past_block
 
-
+                past_block = block
+        return dpcm
