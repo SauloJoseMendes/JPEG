@@ -38,7 +38,9 @@ class Header:
         self.quality_factor = quality_factor
 
     def calculate_Y_diff(self,Y_0, Y_r):
-        return np.abs(Y_0-Y_r)
+        Y_0_float = Y_0.astype(np.float64)
+        Y_r_float = Y_r.astype(np.float64)
+        return np.abs(Y_0_float-Y_r_float)
     
     def calculate_max_Y_diff(self,Y_0, Y_r):
         return np.max(self.calculate_Y_diff(Y_0, Y_r))
@@ -47,15 +49,21 @@ class Header:
         return np.average(self.calculate_Y_diff(Y_0, Y_r))
     
     def calculate_MSE(self, img_0, img_r):
-        return np.sum(np.square(img_0-img_r))/(self.rows * self.columns)
+        img_0_float = img_0.astype(np.float64)
+        img_r_float = img_r.astype(np.float64)
+        return np.sum(np.square(img_0_float-img_r))/(self.rows * self.columns)
     
     def calculate_RMSE(self, img_0, img_r):
         return np.sqrt(self.calculate_MSE(img_0=img_0, img_r=img_r))
     
     def calculate_SNR(self, img_0, img_r):
-        p = np.sum(np.square(img_0))/(self.rows * self.columns)
-        return 10 * np.log10(p/self.calculate_MSE(img_0=img_0, img_r=img_r))
+        img_0_float = img_0.astype(np.float64)
+        img_r_float = img_r.astype(np.float64)
+        p = np.sum(np.square(img_0_float))/(self.rows * self.columns)
+        return 10 * np.log10(p/self.calculate_MSE(img_0=img_0_float, img_r=img_r_float))
     
     def calculate_PSNR(self, img_0, img_r):
-        return 10 * np.log10(np.max(np.square(img_0))/self.calculate_MSE(img_0=img_0, img_r=img_r))
+        img_0_float = img_0.astype(np.float64)
+        img_r_float = img_r.astype(np.float64)
+        return 10 * np.log10(np.max(np.square(img_0_float))/self.calculate_MSE(img_0=img_0_float, img_r=img_r_float))
 
