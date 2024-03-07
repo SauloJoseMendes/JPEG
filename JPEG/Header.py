@@ -36,3 +36,26 @@ class Header:
         self.rows = 0 
         self.columns = 0
         self.quality_factor = quality_factor
+
+    def calculate_Y_diff(self,Y_0, Y_r):
+        return np.abs(Y_0-Y_r)
+    
+    def calculate_max_Y_diff(self,Y_0, Y_r):
+        return np.max(self.calculate_Y_diff(Y_0, Y_r))
+    
+    def calculate_avg_Y_diff(self,Y_0, Y_r):
+        return np.average(self.calculate_Y_diff(Y_0, Y_r))
+    
+    def calculate_MSE(self, img_0, img_r):
+        return np.sum(np.square(img_0-img_r))/(self.rows * self.columns)
+    
+    def calculate_RMSE(self, img_0, img_r):
+        return np.sqrt(self.calculate_MSE(img_0=img_0, img_r=img_r))
+    
+    def calculate_SNR(self, img_0, img_r):
+        p = np.sum(np.square(img_0))/(self.rows * self.columns)
+        return 10 * np.log10(p/self.calculate_MSE(img_0=img_0, img_r=img_r))
+    
+    def calculate_PSNR(self, img_0, img_r):
+        return 10 * np.log10(np.max(np.square(img_0))/self.calculate_MSE(img_0=img_0, img_r=img_r))
+

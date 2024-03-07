@@ -82,7 +82,7 @@ class Decoder:
         Returns:
             numpy.ndarray: Channel without padding.
         """
-        return channel[: self.header.rows, : self.header.cols]
+        return channel[: self.header.rows, : self.header.columns]
     
     def upsample_ycbcr(self):
         """

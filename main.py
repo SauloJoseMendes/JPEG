@@ -134,12 +134,13 @@ if __name__ == '__main__':
         Image.show_img(channel = np.log(np.abs(img.Cb_Q) + 0.0001),cmap=cm_grey, caption = "Cb_Q "+str(quality)+'%', subplot = 132)
         Image.show_img(channel = np.log(np.abs(img.Cr_Q) + 0.0001),cmap=cm_grey, caption = "Cr_Q "+str(quality)+'%', subplot = 133 , last = True)
     """
-
+    """ 
     Image.show_img(channel = airport_decoded_quality10.RGB, caption = "10% Depois", subplot = 231, first = True)
     Image.show_img(channel = airport_decoded_quality25.RGB, caption = "25% Depois", subplot = 232)
     Image.show_img(channel = airport_decoded_quality50.RGB, caption = "50% Depois", subplot = 233)
     Image.show_img(channel = airport_decoded_quality75.RGB, caption = "75% Depois", subplot = 234)
     Image.show_img(channel = airport_decoded_quality100.RGB, caption = "100% Depois", subplot = 235, last = True)
+     """
 
     # ... ALÍNEA 9 ...
     """
@@ -158,4 +159,16 @@ if __name__ == '__main__':
     """
 
     # ... ALÍNEA 10 ...
-
+    original_image = airport.image
+    encoded_image = airport_encoded_8x8
+    decoded_image = airport_decoded_8x8
+    
+    Image.show_img(decoded_image.RGB, caption="Imagem Reconstruida", subplot=121, first=True)
+    Image.show_img(decoded_image.header.calculate_Y_diff(encoded_image.Y,decoded_image.Y_up), cmap= cm_grey, caption="Imagem Diferenças", subplot=122, last=True)
+    print("QF = ", decoded_image.header.quality_factor)
+    print("MSE = ",decoded_image.header.calculate_MSE(original_image,decoded_image.RGB))
+    print("RMSE = ",decoded_image.header.calculate_RMSE(original_image,decoded_image.RGB))
+    print("SNR = ",decoded_image.header.calculate_SNR(original_image,decoded_image.RGB))
+    print("PSNR = ",decoded_image.header.calculate_PSNR(original_image,decoded_image.RGB))
+    print("Max diff : ",decoded_image.header.calculate_max_Y_diff(encoded_image.Y,decoded_image.Y_up))
+    print("Avg diff : ",decoded_image.header.calculate_avg_Y_diff(encoded_image.Y,decoded_image.Y_up))

@@ -41,7 +41,7 @@ class Encoder:
         self.img = img
         self.header = header
         self.R, self.G, self.B = self.split_rgb(img)
-        self.header.rows, self.header.cols = self.R.shape
+        self.header.rows, self.header.columns = self.R.shape
         self.R, self.G, self.B = self.apply_padding(self.R), self.apply_padding(self.G), self.apply_padding(self.B)
         self.Y, self.Cb, self.Cr = self.convert_to_ycbcr()
         self.Y_d, self.Cb_d, self.Cr_d = self.downsample_ycbcr()
