@@ -51,7 +51,7 @@ class Header:
     def calculate_MSE(self, img_0, img_r):
         img_0_float = img_0.astype(np.float64)
         img_r_float = img_r.astype(np.float64)
-        return np.sum(np.square(img_0_float-img_r))/(self.rows * self.columns)
+        return np.sum(np.square(img_0_float-img_r_float))/(self.rows * self.columns)
     
     def calculate_RMSE(self, img_0, img_r):
         return np.sqrt(self.calculate_MSE(img_0=img_0, img_r=img_r))
