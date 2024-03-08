@@ -30,6 +30,18 @@ if __name__ == '__main__':
     airport_encoded_quality75 = Encoder(airport, Header(quality_factor=75))
     airport_encoded_quality100 = Encoder(airport, Header(quality_factor=100))
 
+    nature_encoded_quality10 = Encoder(nature, Header(quality_factor=10))
+    nature_encoded_quality25 = Encoder(nature, Header(quality_factor=25))
+    nature_encoded_quality50 = Encoder(nature, Header(quality_factor=50))
+    nature_encoded_quality75 = Encoder(nature, Header(quality_factor=75))
+    nature_encoded_quality100 = Encoder(nature, Header(quality_factor=100))
+
+    geometric_encoded_quality10 = Encoder(geometric, Header(quality_factor=10))
+    geometric_encoded_quality25 = Encoder(geometric, Header(quality_factor=25))
+    geometric_encoded_quality50 = Encoder(geometric, Header(quality_factor=50))
+    geometric_encoded_quality75 = Encoder(geometric, Header(quality_factor=75))
+    geometric_encoded_quality100 = Encoder(geometric, Header(quality_factor=100))
+
     # ... IMAGES DECODED ...
     airport_decoded = Decoder(airport_encoded)
     nature_decoded = Decoder(nature_encoded)
@@ -43,6 +55,18 @@ if __name__ == '__main__':
     airport_decoded_quality50 = Decoder(airport_encoded_quality50)
     airport_decoded_quality75 = Decoder(airport_encoded_quality75)
     airport_decoded_quality100 = Decoder(airport_encoded_quality100)
+
+    nature_decoded_quality10 = Decoder(nature_encoded_quality10)
+    nature_decoded_quality25 = Decoder(nature_encoded_quality25)
+    nature_decoded_quality50 = Decoder(nature_encoded_quality50)
+    nature_decoded_quality75 = Decoder(nature_encoded_quality75)
+    nature_decoded_quality100 = Decoder(nature_encoded_quality100)
+
+    geometric_decoded_quality10 = Decoder(geometric_encoded_quality10)
+    geometric_decoded_quality25 = Decoder(geometric_encoded_quality25)
+    geometric_decoded_quality50 = Decoder(geometric_encoded_quality50)
+    geometric_decoded_quality75 = Decoder(geometric_encoded_quality75)
+    geometric_decoded_quality100 = Decoder(geometric_encoded_quality100)
     # ... COLORMAPS ...
     cm_red= Image.create_colormap("cm_red", second_color=(1,0,0))
     cm_green = Image.create_colormap("cm_green", second_color=(0,1,0))
@@ -159,10 +183,11 @@ if __name__ == '__main__':
     """
 
     # ... ALÍNEA 10 ...
+    
     original_image = airport.image
     encoded_image = airport_encoded_8x8
     decoded_image = airport_decoded_8x8
-    
+
     Image.show_img(decoded_image.RGB, caption="Imagem Reconstruida", subplot=121, first=True)
     Image.show_img(decoded_image.header.calculate_Y_diff(encoded_image.Y,decoded_image.Y_up), cmap= cm_grey, caption="Imagem Diferenças", subplot=122, last=True)
     print("QF = ", decoded_image.header.quality_factor)
@@ -172,3 +197,29 @@ if __name__ == '__main__':
     print("PSNR = ",decoded_image.header.calculate_PSNR(original_image,decoded_image.RGB))
     print("Max diff : ",decoded_image.header.calculate_max_Y_diff(encoded_image.Y,decoded_image.Y_up))
     print("Avg diff : ",decoded_image.header.calculate_avg_Y_diff(encoded_image.Y,decoded_image.Y_up))
+   
+
+    # ... AIRPORT RECONSTRUCTED ...
+    """ 
+    Image.show_img(airport_decoded_quality10.RGB, caption="QF = 10", subplot=231, first=True)
+    Image.show_img(airport_decoded_quality25.RGB, caption="QF = 25", subplot=232)
+    Image.show_img(airport_decoded_quality50.RGB, caption="QF = 50", subplot=233)
+    Image.show_img(airport_decoded_quality75.RGB, caption="QF = 75", subplot=234)
+    Image.show_img(airport_decoded_quality100.RGB, caption="QF = 100", subplot=235, last = True)
+    """
+    # ... NATURE RECONSTRUCTED ...
+    """ 
+    Image.show_img(nature_decoded_quality10.RGB, caption="QF = 10", subplot=231, first=True)
+    Image.show_img(nature_decoded_quality25.RGB, caption="QF = 25", subplot=232)
+    Image.show_img(nature_decoded_quality50.RGB, caption="QF = 50", subplot=233)
+    Image.show_img(nature_decoded_quality75.RGB, caption="QF = 75", subplot=234)
+    Image.show_img(nature_decoded_quality100.RGB, caption="QF = 100", subplot=235, last = True)
+    """
+     # ... NATURE RECONSTRUCTED ...
+    """ 
+    Image.show_img(geometric_decoded_quality10.RGB, caption="QF = 10", subplot=231, first=True)
+    Image.show_img(geometric_decoded_quality25.RGB, caption="QF = 25", subplot=232)
+    Image.show_img(geometric_decoded_quality50.RGB, caption="QF = 50", subplot=233)
+    Image.show_img(geometric_decoded_quality75.RGB, caption="QF = 75", subplot=234)
+    Image.show_img(geometric_decoded_quality100.RGB, caption="QF = 100", subplot=235, last = True)
+    """

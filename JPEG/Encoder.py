@@ -178,6 +178,28 @@ class Encoder:
         return channel_dct
     
     def quantize(self, channel, is_y):
+        """
+        Quantize the given channel using the provided quantization matrix.
+
+        Args:
+            channel (numpy.ndarray): The input channel to be quantized.
+            is_y (bool): A boolean indicating whether the channel is luminance (Y) or chrominance (CbCr).
+
+        Returns:
+            numpy.ndarray: The quantized channel.
+
+        Notes:
+            The quantization is performed according to the JPEG standard.
+            For luminance (Y) channel, the quantization matrix is fetched from self.header.Q_Y.
+            For chrominance (CbCr) channels, the quantization matrix is fetched from self.header.Q_CbCr.
+            The quantization step is adjusted based on the quality factor stored in self.header.quality_factor.
+            If quality_factor >= 50, sf is calculated as (100 - quality_factor) / 50.
+            If quality_factor < 50, sf is calculated as 50 / quality_factor.
+            Quantization scale factor (qsf) is obtained by multiplying the quantization matrix with sf,
+            rounded and clipped to the range [1, 255].
+            The channel is then divided element-wise by qsf and rounded to the nearest integer.
+            If sf equals 0, indicating lossless compression, the channel remains unchanged.
+        """
         channel_shape = channel.shape
         Q_channel = np.zeros(channel_shape)
 
@@ -205,6 +227,28 @@ class Encoder:
         return Q_channel.astype(np.int16)
 
     def apply_DPCM(self, channel):
+        """
+        Apply Differential Pulse Code Modulation (DPCM) to the given channel.
+
+        Args:
+            channel (numpy.ndarray): The input channel to which DPCM is applied.
+
+        Returns:
+            numpy.ndarray: The channel after DPCM encoding.
+
+        Notes:
+            Differential Pulse Code Modulation (DPCM) is a form of lossless data compression.
+            DPCM predicts the value of each sample by using the difference between the
+            current and the previous sample. This difference, or error signal, is then
+            quantized and encoded.
+            In this implementation, DPCM is applied on an 8x8 block basis.
+            For each 8x8 block in the channel, the difference between each element and
+            its neighboring element (previous element in the same row or column) is computed
+            and stored in the same location.
+            The prediction process starts from the bottom-right corner of the channel and
+            iterates towards the top-left corner. The bottom-right corner is skipped since
+            it has no neighboring elements.
+        """
         channel_shape = channel.shape
         dpcm = np.copy(channel)
 

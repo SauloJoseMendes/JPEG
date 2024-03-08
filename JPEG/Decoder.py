@@ -125,6 +125,27 @@ class Decoder:
         return channel
     
     def inv_quantize(self, channel, is_y):
+        """
+        Inverse quantize the given channel using the provided quantization matrix.
+
+        Args:
+            channel (numpy.ndarray): The input quantized channel.
+            is_y (bool): A boolean indicating whether the channel is luminance (Y) or chrominance (CbCr).
+
+        Returns:
+            numpy.ndarray: The inverse quantized channel.
+
+        Notes:
+            The inverse quantization process reverses the quantization applied during encoding.
+            For luminance (Y) channel, the quantization matrix is fetched from self.header.Q_Y.
+            For chrominance (CbCr) channels, the quantization matrix is fetched from self.header.Q_CbCr.
+            The inverse quantization is performed by multiplying each element of the quantized
+            channel by the corresponding element of the quantization scale factor (qsf).
+            If the quantization scale factor (qsf) is obtained from the quality factor (sf) and
+            quantization matrix, it's rounded and clipped to the range [1, 255].
+            The inverse quantization process is applied on an 8x8 block basis.
+            If sf equals 0, indicating lossless compression, the channel remains unchanged.
+        """
         channel_shape = channel.shape
         Q_channel = np.zeros(channel_shape)
         
@@ -152,6 +173,27 @@ class Decoder:
         return Q_channel
     
     def apply_iDPCM(self, dpcm):
+        """
+        Apply Inverse Differential Pulse Code Modulation (iDPCM) to the given channel.
+
+        Args:
+            dpcm (numpy.ndarray): The input channel encoded using DPCM.
+
+        Returns:
+            numpy.ndarray: The channel after iDPCM decoding.
+
+        Notes:
+            Inverse Differential Pulse Code Modulation (iDPCM) is the reverse process of DPCM,
+            used to decode the DPCM-encoded signal.
+            iDPCM reconstructs the original signal by adding the predicted difference (error)
+            to the previously decoded sample.
+            This function applies iDPCM on an 8x8 block basis.
+            For each 8x8 block in the DPCM-encoded channel, the error values are added to
+            reconstruct the original values.
+            The reconstruction process starts from the top-left corner of the channel and
+            iterates towards the bottom-right corner. The top-left corner is skipped since
+            it has no previous values for prediction.
+        """
         channel_shape = dpcm.shape
         channel = np.copy(dpcm)
 
