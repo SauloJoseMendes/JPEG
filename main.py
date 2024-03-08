@@ -183,7 +183,7 @@ if __name__ == '__main__':
     """
 
     # ... ALÍNEA 10 ...
-    
+    """ 
     original_image = airport.image
     encoded_image = airport_encoded_8x8
     decoded_image = airport_decoded_8x8
@@ -197,7 +197,7 @@ if __name__ == '__main__':
     print("PSNR = ",decoded_image.header.calculate_PSNR(original_image,decoded_image.RGB))
     print("Max diff : ",decoded_image.header.calculate_max_Y_diff(encoded_image.Y,decoded_image.Y_up))
     print("Avg diff : ",decoded_image.header.calculate_avg_Y_diff(encoded_image.Y,decoded_image.Y_up))
-   
+    """
 
     # ... AIRPORT RECONSTRUCTED ...
     """ 
