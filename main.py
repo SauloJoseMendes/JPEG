@@ -215,7 +215,7 @@ if __name__ == '__main__':
     Image.show_img(nature_decoded_quality75.RGB, caption="QF = 75", subplot=234)
     Image.show_img(nature_decoded_quality100.RGB, caption="QF = 100", subplot=235, last = True)
     """
-     # ... NATURE RECONSTRUCTED ...
+     # ... GEOMETRIC RECONSTRUCTED ...
     """ 
     Image.show_img(geometric_decoded_quality10.RGB, caption="QF = 10", subplot=231, first=True)
     Image.show_img(geometric_decoded_quality25.RGB, caption="QF = 25", subplot=232)
