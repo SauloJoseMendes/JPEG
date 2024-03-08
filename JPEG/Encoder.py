@@ -219,10 +219,10 @@ class Encoder:
 
             for i in range(0, channel_shape[0], 8):
                 for j in range(0, channel_shape[1], 8):
-                    Q_channel[i:i+8, j:j+8] = np.divide(channel[i:i+8, j:j+8], qsf)
+                    Q_channel[i:i+8, j:j+8] = channel[i:i+8, j:j+8] / qsf
             Q_channel = np.round(Q_channel)
         else:
-            Q_channel = channel
+            Q_channel = np.round(channel)
 
         return Q_channel.astype(np.int16)
 
@@ -257,8 +257,8 @@ class Encoder:
                 if r == 0 and c == 0:
                     continue
                 if c == 0:
-                    dpcm[r:r+8, 0:8] = dpcm[r:r+8, 0:8] - dpcm[r-8:r, channel_shape[1]-8:channel_shape[1]]
+                    dpcm[r, 0] = dpcm[r, 0] - dpcm[r-8, channel_shape[1]-8]
                 else:
-                    dpcm[r:r+8, c:c+8] = dpcm[r:r+8, c:c+8] - dpcm[r:r+8, c-8:c]
+                    dpcm[r, c] = dpcm[r, c] - dpcm[r, c-8]
 
         return dpcm

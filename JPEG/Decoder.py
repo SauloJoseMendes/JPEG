@@ -202,8 +202,8 @@ class Decoder:
                 if r == 0 and c == 0:
                     continue
                 if c == 0:
-                    channel[r:r+8, 0:8] = channel[r:r+8, 0:8] + channel[r-8:r, channel_shape[1]-8:channel_shape[1]]
+                    channel[r, 0] = channel[r, 0] + channel[r-8, channel_shape[1]-8]
                 else:
-                    channel[r:r+8, c:c+8] = channel[r:r+8, c:c+8] + channel[r:r+8, c-8:c]
+                    channel[r, c] = channel[r, c] + channel[r, c-8]
 
         return channel
