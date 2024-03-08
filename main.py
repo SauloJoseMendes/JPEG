@@ -172,11 +172,11 @@ if __name__ == '__main__':
     Image.show_img(channel = np.log(np.abs(airport_encoded_8x8.Cb_DPCM) + 0.0001),cmap=cm_grey, caption = "Cb_DPCM", subplot = 132)
     Image.show_img(channel = np.log(np.abs(airport_encoded_8x8.Cr_DPCM) + 0.0001),cmap=cm_grey, caption = "Cr_DPCM", subplot = 133 , last = True)
     
-    print(".....Y_Q ENCODED BLOCK 1 (i).....")
+    print(".....Y_Q ENCODED BLOCK (i).....")
     print(airport_encoded_8x8.Y_Q[8:16,8:16])
-    print(".....Y_DPCM ENCODED BLOCK 1 (i).....")
+    print(".....Y_DPCM ENCODED BLOCK (i).....")
     print(airport_encoded_8x8.Y_DPCM[8:16,8:16])
-    print(".....Y_Q DECODED BLOCK 1 (i).....")
+    print(".....Y_Q DECODED BLOCK (i).....")
     print(airport_decoded_8x8.Y_Q[8:16,8:16])
     """
 
